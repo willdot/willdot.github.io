@@ -21,7 +21,6 @@ git push
 # Adding files
 
 Add all files
-
 ```
 git add *
 ```
