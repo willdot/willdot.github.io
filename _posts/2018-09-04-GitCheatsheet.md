@@ -11,7 +11,7 @@ I'm fairly new to using git as a form of source control, so I'm always having to
 Commit to local repo
 ```
 git commit -a -m "Comments here"
-'''
+```
 
 Push to Git
 ```
