@@ -18,6 +18,7 @@ Push to Git
 git push
 ```
 
+
 # Adding files
 
 Add all files
@@ -34,6 +35,7 @@ Add a single files
 ```
 git add filename.txt
 ```
+
 
 # Branching
 
@@ -55,6 +57,7 @@ git fetch
 
 git branch -add
 ```
+
 
 # Checking out branches
 
