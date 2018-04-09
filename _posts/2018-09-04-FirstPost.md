@@ -5,3 +5,7 @@ date: 2018-04-09
 ---
 
 Here is the first post. 
+
+```powershell
+Some code will go here
+```
