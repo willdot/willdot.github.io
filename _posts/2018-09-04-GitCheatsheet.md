@@ -22,12 +22,12 @@ git push
 
 Add all files
 
-'''
+```
 git add *
-'''
+```
 
 Add a folder and it's contents
-'''
+```
 git add foldername/
 ```
 
@@ -39,7 +39,7 @@ git add filename.txt
 # Branching
 
 Create new branch locally by branching off another branch (or master)
-'''
+```
 git checkout <Branch to branch off of>
 
 git checkout -b <New branch name>
