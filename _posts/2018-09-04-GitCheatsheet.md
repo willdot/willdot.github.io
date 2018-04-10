@@ -58,6 +58,11 @@ Get latest branch list from Git
 ```
 git remote update origin --prune
 ```
+
+Delete local branch
+```
+git branch -d <Branch Name> (use -D to force)
+```
 <br/>
 # Checking out branches
 
