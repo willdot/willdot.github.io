@@ -1,7 +1,7 @@
 ---
 title:  Git cheatsheet
 author: Will Andrews
-date: 2018-04-09
+date: 2018-04-10
 ---
 
 I'm fairly new to using git as a form of source control, so I'm always having to look up how to do things using the command line. So here are a few of the commands I use the most.
@@ -61,8 +61,9 @@ git remote update origin --prune
 
 Delete local branch
 ```
-git branch -d <Branch Name> (use -D to force)
+git branch -d <Branch Name> 
 ```
+(use -D to force)
 <br/>
 # Checking out branches
 
