@@ -52,8 +52,11 @@ git push --set-upstream origin <New branch name>
 Get new branches from Git
 ```
 git fetch
+```
 
-git branch -add
+Get latest branch list from Git
+```
+git remote update origin --prune
 ```
 <br/>
 # Checking out branches
