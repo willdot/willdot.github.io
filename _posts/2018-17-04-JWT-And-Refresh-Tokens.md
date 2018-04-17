@@ -24,4 +24,4 @@ Theory:
 Take a look at my DailyDo git repo for how I implemented this. The AuthenticationTokenController is where most of the magic happens.
 
 
-https://github.com/willdot/DailyDo/tree/master/DailyDo.WebApi
+<https://github.com/willdot/DailyDo/tree/master/DailyDo.WebApi>
