@@ -28,7 +28,7 @@ docker images
 ```
 
 Then I grab the image id and run the run command, mapping the ports inside the container, to the ports on my machine, and giving it a name.
-(80:80 means map port 80 inside the container, to port 80 on my machine.)
+(60:80 means map port 80 inside the container, to port 60 on my machine as an example)
 
 ```
 docker run -d -p 80:80 --name <give you container a name here> <image id>
