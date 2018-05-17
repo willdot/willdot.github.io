@@ -10,7 +10,7 @@ So with command line I did the following:
 
 Start Docker on my machine. (I always forget this....)
 
-Login to the Azure.
+Login to the Azure registry.
 ```
 sudo docker login <servername> -u <username> -p <password>
 ```
