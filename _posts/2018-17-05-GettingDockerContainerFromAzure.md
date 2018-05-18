@@ -63,7 +63,7 @@ Delete container:
 docker rm <container id>
 ```
 
-Enter the container with bash
+Enter the container with bash:
 ```
 docker exec -it <container id> bash
 ```
