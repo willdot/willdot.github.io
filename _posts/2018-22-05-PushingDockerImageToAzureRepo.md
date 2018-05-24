@@ -77,4 +77,4 @@ The latest is the same image as V2, but you realise there's a bug in it and you 
 
 * Latest (same as v1)
 * V1
-* V2
+* V2 
