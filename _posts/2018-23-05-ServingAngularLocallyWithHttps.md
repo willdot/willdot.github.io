@@ -4,7 +4,11 @@ author: Will Andrews
 date: 2018-05-17
 ---
 
-Had a bit of an issue trying to use 'navigator.geolocation.getCurrentPosition' with Safari as it wouldn't allow it over http So to use this, I need to serve my Angular app over https.
+Had a bit of an issue trying to use '
+``` typescript
+navigator.geolocation.getCurrentPosition
+```
+ with Safari as it wouldn't allow it over http So to use this, I need to serve my Angular app over https.
 
 So first things first, I installed a package that contains a dev certificate.
 
