@@ -4,7 +4,8 @@ author: Will Andrews
 date: 2018-05-17
 ---
 
-Had a bit of an issue trying to use '
+Had a bit of an issue trying to use
+
 ``` typescript
 navigator.geolocation.getCurrentPosition
 ```
