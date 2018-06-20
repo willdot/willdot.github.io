@@ -29,15 +29,15 @@ This will show no results, but prove that it's working.
 
 Now to add a secret, use the following:
 ```
-dotnet user-secrets set "Test:" "12345"
+dotnet user-secrets set "Test" "12345"
 ```
 This should give a success message, and then when running the list command again, you should see the secret.
 
-The first string provided (in this instance "Test:") is the key name and the second string (in this instance "12345") is the value.
+The first string provided (in this instance "Test") is the key name and the second string (in this instance "12345") is the value.
 
 Now to remove, use the following:
 ```
-dotnet user-secrets set "Test:"
+dotnet user-secrets set "Test"
 ```
 Once again, run the list command and you will see no results.
 
@@ -52,6 +52,8 @@ In your startup class, in your ConfigureServices method, add in the following to
 ``` c#
 string secret = Configuration["Test"];
 ```
+
+If you have a key in your appsettings.json with the same name as your secret manager, it will automatically use the secret manager version and not your app settings. This means that you don't really need to use appsettings for storing this type of information. Also it means that if you host your app in Azure, you can add your keys and data into the appsettings in the Azure app setting.
 
 And that's it!! Full code below:
 ``` c#
