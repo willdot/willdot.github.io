@@ -6,7 +6,6 @@ order: 15
 ---
 
 ## Go!
-
 Today I decided to take a step away from the usual stuff I work with (.net, Angular) and learn something new. I have heard a few people tell me that Go is a fun and easy to pick up language and after a bit of Googling, I soon discovered how popular it was. So the next few blog posts will be Go related, starting with this post on setting up a dev environment.
 
 ### Installing Go
