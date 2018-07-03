@@ -2,6 +2,7 @@
 title:  Pushing a local Docker image to an Azure container registry
 author: Will Andrews
 date: 2018-05-22
+order: 10
 ---
 
 ## Push and image from local to Azure

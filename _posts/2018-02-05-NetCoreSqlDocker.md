@@ -2,6 +2,7 @@
 title:  .Net Core + Local SQl + Docker + Mac
 author: Will Andrews
 date: 2018-05-02
+order: 7
 ---
 
 Started working through a PluralSight course on building .NET core API. Really good course and very thorough. 

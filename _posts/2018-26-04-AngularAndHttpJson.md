@@ -2,6 +2,7 @@
 title:  Angular - Http JSON responses
 author: Will Andrews
 date: 2018-04-26
+order: 6
 ---
 
 Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do 

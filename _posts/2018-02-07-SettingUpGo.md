@@ -1,7 +1,8 @@
 ---
 title:  Setting up a Go dev environment
 author: Will Andrews
-date: 2018-06-02
+date: 2018-07-02
+order: 15
 ---
 
 ## Go!

@@ -2,6 +2,7 @@
 title:  Get Docker container from Azure and run locally
 author: Will Andrews
 date: 2018-05-17
+order: 9
 ---
 
 So I had a Docker image on an Azure container registry, and I wanted to pull it and run it locally on my machine.

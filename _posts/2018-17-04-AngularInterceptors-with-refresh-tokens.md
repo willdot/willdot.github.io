@@ -2,6 +2,7 @@
 title:  Angular Interceptors with some refresh token usage
 author: Will Andrews
 date: 2018-04-17
+order: 4
 ---
 
 Following on from the Refresh Token post, I thought I would do a quick how to on using this in an Angular app. I heard someone talking about interceptors in Angular and thought I would investigate as they sounded useful. Once I had figured out what they did and how simple they are, it made sense to use them to implement the refresh tokens.

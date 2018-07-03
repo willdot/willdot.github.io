@@ -2,6 +2,7 @@
 title:  Debugging and Angular App in Visual Studio Code
 author: Will Andrews
 date: 2018-05-11
+order: 8
 ---
 
 Not being able to debug Angular code in Visual Studio Code always bugged me (pun intended) and then I stumbled across an extension that allows just this!

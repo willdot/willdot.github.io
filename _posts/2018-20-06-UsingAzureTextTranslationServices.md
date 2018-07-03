@@ -2,6 +2,7 @@
 title:  Using Azure text translation services
 author: Will Andrews
 date: 2018-06-20
+order: 13
 ---
 
 As part of a discovery task at work, I was asked to take a look at some translation services available. First one I tried was Azure, and I have to say I'm really impressed. There is also a free tier to use so there's no need to pay to try it out!

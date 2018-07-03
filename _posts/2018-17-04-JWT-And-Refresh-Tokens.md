@@ -2,6 +2,7 @@
 title:  JWT and Refresh Tokens
 author: Will Andrews
 date: 2018-04-17
+order: 3
 ---
 
 This is something I've been playing with for a while and I've had JWT implemented for a while in my web app, however something that always bugged me was 'How do you stop the user having to log in again, if the JWT expires after the short life span it's given?'. Refresh tokens. There seemed to be so many different ways to implement this, and it's a sea of confusion so for my needs, I created a hybrid of some of them. 

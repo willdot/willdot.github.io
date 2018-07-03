@@ -2,6 +2,7 @@
 title:  Git cheatsheet
 author: Will Andrews
 date: 2018-04-10
+order: 2
 ---
 
 I'm fairly new to using git as a form of source control, so I'm always having to look up how to do things using the command line. So here are a few of the commands I use the most.

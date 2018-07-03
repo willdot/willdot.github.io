@@ -2,6 +2,7 @@
 title:  Serving an Angular app locally over https
 author: Will Andrews
 date: 2018-05-17
+order: 11
 ---
 
 Had a bit of an issue trying to use

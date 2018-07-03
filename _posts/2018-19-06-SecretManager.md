@@ -2,6 +2,7 @@
 title:  Using the Secret Manager in a Net Core ASP project
 author: Will Andrews
 date: 2018-06-19
+order: 12
 ---
 
 We've all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that's really simple to use.
