@@ -21,7 +21,7 @@ There are 2 ways to create a slice.
 1: Use the 'make' function and spec out the slice, by saying what type of data will be held in the slice, the length of the slice and the capacity of the underlying array.
 
 This slice will contain string values, have a length of 2, but the array storing the data will be have a capacity of 5, allowing the slice to grow. We then add in the values we want to the segments. However, if we try and add in a 3rd, we get an error. To add a new one we will need to append, which will be covered later.
-```Go
+``` Go
 shoppingList := make([]string, 2, 5)
 shoppingList[0] = "Milk"
 shoppingList[1] = "Bread
