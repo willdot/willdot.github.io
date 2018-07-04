@@ -3,7 +3,7 @@ layout: archive
 ---
 
 <h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
-{% assign posts = paginator.posts   | sort: 'order' reverse  %}
+{% assign posts = paginator.posts reverse   | sort: 'order'   %}
 {% for post in posts %}
   {% include archive-single.html %}
 {% endfor %}
