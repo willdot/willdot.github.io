@@ -219,7 +219,7 @@ delete(testMap, "c")
 fmt.Println(testMap)
 ```
 This will output the following:
-```
+```sh
 map[a:1 b:2 c:3]
 map[a:1 b:2]
 ```
