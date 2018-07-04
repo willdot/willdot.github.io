@@ -17,7 +17,7 @@ A folder that contains go code files becomes a package and all packages have a p
 
 Here's an example of a simple HelloWorld application.
 
-```Go
+```go
 package main
 
 import (
@@ -33,19 +33,19 @@ Nice and easy. So, what does it all mean?
 
 
 This line at the top is telling the compiler, what this package is called. The main package is used to tell the compiler that this package is an application.
-``` Go
+```go
 package main
 ```
 
 This section is where you can import other packages to use in your code. "fmt" is a format package that implements formatted I/O, such as writing a line to the console.
-```Go
+```go
 import (
     "fmt"
 )
 ```
 
 As we are making this a main package, it needs to have a main function. This is the entry point of the application and will be run on start. In it we are using the "fmt" package to print a line to the console.
-``` Go
+``` go
 func main() {
     fmt.Println("Hello World")
 }
@@ -57,7 +57,7 @@ That's it. Nice and simple.
 
 Now let's say we wanted to have some code that takes an input string, and prints it to the console and then returns a true value. We could either create a new function in the main package, and call it from the main function, like so:
 
-```Go
+```go
 package main
 
 import (
@@ -90,7 +90,7 @@ However, let's say we wanted this function to be available and used by other pac
 
 Now create a new folder either in the main folder, or at the same level, as long as it's a folder. Inside the folder create a new go file and put the following code in:
 
-```Go
+```go
 package printsomething
 
 import (
@@ -107,7 +107,7 @@ As you can see, we've give the package a name and added a function in. Note that
 
 Now change your main code to look like this:
 
-```Go
+```go
 package main
 
 import (

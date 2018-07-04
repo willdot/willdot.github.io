@@ -50,7 +50,7 @@ You should now be in the directory you created. Make sure you have the src folde
 ### Create a quick Hello World app to test all is working.
 The best way to test everything is working, as a developer, is to create a Hello World app. So inside your src folder, create a new folder HelloWorld and inside there, create a file HelloWorld.go Inside this file, write the following:
 
-``` Go
+``` go
 package main
 
 import (

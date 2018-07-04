@@ -15,7 +15,7 @@ Imagine we have a person. This person has a name, age, occupation and height. We
 ### Creating a struct
 
 It's easy to create:
-```Go
+```go
 type person struct {
     name string
     occupation string
@@ -29,7 +29,7 @@ type person struct {
 There are a few ways of using a struct you've created, like there are a few ways of creating normal variables.
 
 1: Create a variable and then populate the properties after.
-```Go
+```go
 func main() {
     var aPerson person 
     aPerson.name = "Will"
@@ -41,7 +41,7 @@ func main() {
 ```
 
 2: Create a reference to a person variable. Note that you have to use the * to print the value of the person. If you don't you print the address of the reference.
-```Go
+```go
 func main() {
     aPerson := new(person)
     aPerson.name = "Will"
@@ -53,7 +53,7 @@ func main() {
 ```
 
 3: Create a new variable and initialize it at the same time.
-```Go
+```go
 func main() {
     aPerson := person{
         name: "Will",
@@ -69,7 +69,7 @@ func main() {
 Sometimes it's useful to create a package with multiple structs in it that can be used in different packages. Remember if you want something to be exportable, when giving it a name, it needs to start with a capital letter!!
 
 Let's create a models package and give it some structs:
-```Go
+```go
 package models
 
 type Person struct {
@@ -87,7 +87,7 @@ type House struct {
 ```
 
 Now we can import this package into our main package and use it.
-```Go
+```go
 package main
 
 import (
