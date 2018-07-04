@@ -126,3 +126,100 @@ shoppingList2Capacity is:  4
 [Milk Bread Coffee Sugar]
 ```
 Note how the second shopping list contains different values after the first shopping list is expanded and edited.
+
+### So what's a map?
+Maps are a the equivalent of a dictionary in .Net
+
+### Creating a map
+They are created in a similar way to slices.
+
+1: Use the make function to create a new map that contains no keys or values and then add some keys and values after.
+
+This map will have a key of type string and a value of type int. We will then add in a few keys with values.
+```Go
+testMap := make(map(string)int)
+testMap["a"] = 1
+testMap["b"] = 2
+testMap["c"] = 3
+```
+
+2: Directly create the map and initialize it with values. 
+
+This map will also have a key of type string and a value of type int, but it will have some keys and values assigned straight away.
+
+```Go
+testMap := map[string]int{
+    "a":1,
+    "b":2,
+    "c":3
+}
+```
+
+### Getting a value from a map
+
+To get a value, you just use the key to get a value:
+```Go
+testMap := map[string]int{
+    "a":1,
+    "b":2,
+    "c":3
+}
+fmt.Println(testMap["b"])
+```
+This will give the result:
+```
+2
+```
+
+### Edit a map value
+To edit a value in a map, use the key and then set the value: 
+```Go
+testMap := map[string]int{
+    "a":1,
+    "b":2,
+    "c":3
+}
+fmt.Println(testMap["b"])
+testMap["b"] = 99
+fmt.Println(testMap["b"])
+```
+This will output the following:
+```
+2
+99
+```
+If you try and edit a value of a key that doesn't exist, it will simply add it.
+
+### Adding a value
+To do this, you use the same method as editing a value, the only difference is that you are using a key that doesn't already exist.
+```Go
+testMap := map[string]int{
+    "a":1,
+    "b":2,
+    "c":3
+}
+testMap["d"] = 99
+fmt.Println(testMap["d"])
+```
+This will output the following:
+```
+99
+```
+
+### Deleting a value from a map
+To do this, there is a delete function:
+```Go
+testMap := map[string]int{
+    "a":1,
+    "b":2,
+    "c":3
+}
+fmt.Println(testMap)
+delete(testMap, "c")
+fmt.Println(testMap)
+```
+This will output the following:
+```
+map[a:1 b:2 c:3]
+map[a:1 b:2]
+```
