@@ -5,8 +5,9 @@ date: 2018-07-04
 order: 18
 ---
 
-### What's the point of Go structs
+This post will go through the use of Structs in Go and give an understanding of what they are used for.
 
+### What's the point of Go structs?
 Let's say the data types provided to us aren't enough, and we want to create our own. Ones that have different properties of various types. 
 
 Imagine we have a person. This person has a name, age, occupation and height. Well we can create a struct that's a person and then use this in our code.

@@ -5,6 +5,8 @@ date: 2018-07-04
 order: 17
 ---
 
+This post will go through the uses of variables in Go.
+
 ### Creating a variable
 
 
