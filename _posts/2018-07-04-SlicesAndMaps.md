@@ -28,7 +28,7 @@ shoppingList[1] = "Bread
 ```
 
 2: Directly create a slice and let Go work out the capacity etc.
-```Go
+```go
 shoppingList := []string {"Milk", "Bread"}
 ```
 
@@ -219,7 +219,7 @@ delete(testMap, "c")
 fmt.Println(testMap)
 ```
 This will output the following:
-```sh
+```
 map[a:1 b:2 c:3]
 map[a:1 b:2]
 ```
