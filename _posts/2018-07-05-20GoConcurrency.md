@@ -76,9 +76,13 @@ Hello World
 So what's going on in this code?
 
 1: We create a wait group which is a collection of Go routines that need to be completed before the code can continue.
+
 2: We say that there are going to be 2 Go routines that we want to add to the wait group.
+
 3: We use 'Go' in front of the function to indicate that it is a Go routine.
+
 4: The defer command is an instruction to the function for when it has completed. In this case we are going to tell the wait group that this function is done, and therefore decrement the wait group count.
+
 5: The waitGroup.Wait() is a blocker that will stop the main function from exiting until all Go routines have completed (the count of go routines has reached 0 by each function using the defer command to say it's done)
 
 So what happens is the first function starts and then when it gets to the sleep command, the Go routine manager realizes that the application is not doing anything, and it could do something else while it waits. It just so happens that it has another Go routine to execute and so it does that and runs the second function while it's waiting. Then when that's finished, it will go back to the first function and continue to wait for the sleep to finish and then run the rest of the code. 
