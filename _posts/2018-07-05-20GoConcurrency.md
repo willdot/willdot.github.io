@@ -17,7 +17,7 @@ Note: When writing out a function, if you put a pair of () at the end of the clo
 func main() {
     fmt.Println("Let's start")
     func() {
-        time.Sleep(5 * time.second) // You will need to import the time package
+        time.Sleep(5 * time.second) // You will need to import the time package 
         fmt.Println("Hello World")
     }()
 
