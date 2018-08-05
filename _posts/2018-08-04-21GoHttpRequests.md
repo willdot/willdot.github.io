@@ -58,7 +58,7 @@ Now that you've made your HTTP request, it's time to use the data that has been 
 First things first, you need to create a model struct for the data you've received. This is easy enough and only requires you to create a struct and add in some properties. You don't have to create a property for each JSON property, the decoder will only map the properties you have in your struct. 
 
 So if the JSON was something like this:
-```JSON
+```json
 {
     "name" : "Will",
     "age" : 28,
@@ -78,7 +78,7 @@ type Person struct {
     Location Address `json:"location"`
 }
 
-type Address strut {
+type Address struct {
     Street string `json:"street"`
     Postcode string `json:"postcode"`
 }
@@ -107,3 +107,63 @@ This will result in getting "Will" printed to the console.
 
 
 That's it. We have now made a post HTTP request and converted the response to a model we have created. 
+
+Here is the full code. I have split the decode JSON into it's own function. 
+
+```go
+
+type Person struct {
+    Name string `json:"name"`
+    Location Address `json:"location"`
+}
+
+type Address struct {
+    Street string `json:"street"`
+    Postcode string `json:"postcode"`
+}
+
+func main() {
+
+    client := &http.Client{}
+
+	url := "http://localhost:80/something"
+
+    body := strings.NewReader("[{\"SomeProperty\" : \"SomeValue\"}]")
+
+	request, err := http.NewRequest("POST", url, body)
+
+	if err != nil {
+		fmt.Printf("Error on request: %v\n", err)
+		return nil
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	response, err := client.Do(request)
+
+	if err != nil {
+		fmt.Printf("Error on request: %v\n", err)
+		return nil
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		convertedJSON := convertResponse(response)
+    }
+}
+    
+func convertResponse(response *http.Response) *Person {
+
+    decoder := json.NewDecoder(response.Body)
+
+    var result = new(Person)
+
+    err := decoder.Decode(&result)
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    return result
+}
+```
