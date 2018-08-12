@@ -72,6 +72,22 @@ func main() {
 
 Now when we call this function, and pass in the service as a parameter, we will get "Hello!" printed to the console.
 
+### Using generic interfaces
+
+Sometimes a function needs to receive a parameter of just about anything. This can be done by using 'interface{}' as the parameter. Then you can send in anything to the function and use it. In this example, I am going to create a function that accepts a generic interface, and then if it is of my 'aService' type, then I'll call one of the functions on this struct.
+
+```go
+func genInterface(i interface{}) {
+
+	v, ok := i.(SomeService)
+
+	if ok == true {
+		fmt.Println(v.DoSomething("This was generic"))
+	}
+}
+
+```
+
 ### Summary
 
 Try removing the doSomethingElse function from your code, and seeing if it will run. It won't because the struct won't implement the interface. Even though we aren't using that function at the moment, it is something that is required to meet the interfaces requirements.
@@ -98,6 +114,15 @@ func printSomething(x SomeService) {
     fmt.Println(x.DoSomething("Hello again"))
 }
 
+func genInterface(i interface{}) {
+
+	v, ok := i.(SomeService)
+
+	if ok == true {
+		fmt.Println(v.DoSomething("This was generic"))
+	}
+}
+
 func main() {
     serv := aService{}
 
@@ -110,6 +135,8 @@ func main() {
     fmt.Println(response)
 
     printSomething(serv)
+
+    genInterface(serv)
 }
 ```
 This code should return the following:
@@ -117,6 +144,7 @@ This code should return the following:
 Go Go Go!
 3 is the magic number
 Hello again!
+This was generic!
 ```
 
 Now that you understand interfaces, the next thing to investigate is using these interfaces as proper services, dependency injection and testing.
