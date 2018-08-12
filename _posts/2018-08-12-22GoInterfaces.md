@@ -79,7 +79,7 @@ Sometimes a function needs to receive a parameter of just about anything. This c
 ```go
 func genInterface(i interface{}) {
 
-	v, ok := i.(SomeService)
+	v, ok := i.(aService)
 
 	if ok == true {
 		fmt.Println(v.DoSomething("This was generic"))
@@ -116,7 +116,7 @@ func printSomething(x SomeService) {
 
 func genInterface(i interface{}) {
 
-	v, ok := i.(SomeService)
+	v, ok := i.(aService)
 
 	if ok == true {
 		fmt.Println(v.DoSomething("This was generic"))
