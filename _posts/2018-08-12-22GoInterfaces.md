@@ -7,7 +7,7 @@ order: 22
 
 Interfaces are a very useful part of software development as they allow the code to be decoupled. In Go, a language where there aren't classes, we can use the structs and kind of use them as a class. That way we can create interfaces and then create structs that implement these interfaces.
 
-###Creating an interface in Go
+### Creating an interface in Go
 
 Creating an interface is quite easy. 
 
@@ -18,7 +18,7 @@ type SomeService interface {
 }
 ```
 
-###Creating a struct and then making it implement the interface
+### Creating a struct and then making it implement the interface
 
 Next we create a struct, but instead of putting the functions from the interface inside the struct (because structs can only contain fields), we create the functions and then tell the functions what the receiver is. This essentially assigns the function to the struct, and so it can only be called from a structs instance.
 
@@ -40,7 +40,7 @@ func (aService) DoSomethingElse(i int, s string) string {
 
 Now that we have both functions that the interface requires, assigned to a struct, we can now use them.
 
-###Using the functions 
+### Using the functions 
 
 Create a new instance of the aService struct and call the functions. Simple.
 
@@ -54,7 +54,7 @@ fmt.Println(response)
 
 We should then get "Hello!" as the response.
 
-###Create a function that takes an interface as a parameter
+### Create a function that takes an interface as a parameter
 
 So now we can create structs that implement an interface, we can now create a function that takes the interface as a parameter, meaning that any struct that implements this interface can be passed into the function.
 
@@ -72,7 +72,7 @@ func main() {
 
 Now when we call this function, and pass in the service as a parameter, we will get "Hello!" printed to the console.
 
-###Summary
+### Summary
 
 Try removing the doSomethingElse function from your code, and seeing if it will run. It won't because the struct won't implement the interface. Even though we aren't using that function at the moment, it is something that is required to meet the interfaces requirements.
 
