@@ -65,8 +65,10 @@ Well as a developer, you're always messing around with your database and its con
 ```
 docker exec -i {container name} /usr/bin/mysqldump -u root -p {database or schema name} > {filenameToSaveAs}.sql
 ```
+This backup script can now be found in what ever directory you are currently in.
 
 ## Restore
+From the directory your backup script file is located.
 ```
 docker exec -i {container name} /usr/bin/mysql -u root -p {database name} < {filenameToRestoreFrom}.sql
 ```
