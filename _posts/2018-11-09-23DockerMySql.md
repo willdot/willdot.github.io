@@ -11,7 +11,7 @@ Recently I've been playing around with other databases other than Microsoft Sql 
 
 * Docker using Linux containers
 
-* Mysql installed (Mysql workbench will help as well)
+* Mysql workbench
 
 
 ## Create docker container with Mysql image
