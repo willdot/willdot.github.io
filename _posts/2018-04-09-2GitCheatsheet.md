@@ -71,3 +71,35 @@ git branch -d <Branch Name>
 ```
 git checkout <Branch name here>
 ```
+
+# Undoing commits
+
+You've made some changes and then committed, but want to undo that commit and keep working with the changes, use:
+
+```
+git reset --soft HEAD~1
+```
+
+You've made some changes and committed, but you want to discard tha commit and the changes, use:
+
+```
+git reset --hard HEAD~1
+```
+
+In each of the commands, the number at the end can be replaced with the amount of commits you wish to undo.
+
+
+# Clearing down local branches
+
+To clear down the remote branches:
+```
+git remote prune origin
+```
+
+Can also put the --dry-run flag after to see what will be done.
+
+Then you can go through and delete local branches:
+```
+git branch -d <branch name>
+```
+You can force it by using a capital D
