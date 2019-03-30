@@ -53,7 +53,7 @@ I've also used "https://github.com/kardianos/govendor" to create my import vendo
 
 ## It starts with a Dockerfile
 
-The first thing I do is create my Dockerfile which pulls the latest golang image, copies my code, sets an ENV port and runs a command. Nice simple stuff.
+The first thing I do is create my Dockerfile which pulls the latest golang image, copies my code and sets an ENV variable for a port. Nice simple stuff.
 
 ``` dockerfile
 FROM golang:1.12
