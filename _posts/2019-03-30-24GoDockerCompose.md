@@ -1,9 +1,9 @@
 ---
-title:  Hosting a web application in a Docker container with Docker Compose
+title:  Hosting a web application and MySql database in a Docker container with Docker Compose
 author: Will Andrews
 date: 2019-03-30
 order: 24
-published: true
+published: false
 ---
 
 So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That's where I read about Docker Compose.
@@ -108,7 +108,65 @@ docker-compose up --build
 
 You will see that you app has been created and if you run docker ps -a in another terminal you will see it open. Then head to localhost:60 and see you app running.
 
-Here are a few helpful commands:
+
+## Adding MySql into the mix
+
+Now we have our web app up and running, we can add in a database. My web app doesn't use a database yet, but let's pretend it does.
+
+Configuration looks like this:
+
+``` yml
+version: '2'
+services:
+  app:
+    container_name: my-app
+    build: .
+    command: go run main.go
+    volumes:
+      - .:/go/src/app
+    working_dir: /go/src/app
+    ports:
+      - "60:3001"
+    environment:
+      PORT: 3001
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      # This will open port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+# Names our volume
+volumes:
+  my-db:
+```
+
+As you can see it's not that complicated. Tell it to pull an image, set some database enviornment variables for username and passwords. Then set the ports to be used, then expose the container port. Finally add the volume which is where the data will be stored.
+ 
+```
+docker-compose up --build -d
+```
+Running this command will not rebuild your web app, because nothing changed, but then create a container for the MySql database. 
+
+If you make some changes to the web app code and re run that command you'll notice that it will only recreated the web app container, but leave the MySql one alone. You can test this by opening up that Database with MySql Workbench, creating a table. Then change your web app code and run the build command. You can also run:
+```
+docker-compose down
+```
+
+This will stop all containers. Then when you run the up command you will notice it will start the container and your database instance will persist and still have the table you created.
+
+Using this, along with the backup MySql docker database post I did previously will allow you to keep your test data.
+
+## Helpful commands
 
 ```
 // Start the container if it's already been built and pick up from where you left off
