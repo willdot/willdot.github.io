@@ -3,7 +3,6 @@ title:  Hosting a web application and MySql database in a Docker container with 
 author: Will Andrews
 date: 2019-03-30
 order: 24
-published: true
 ---
 
 So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That's where I read about Docker Compose.
