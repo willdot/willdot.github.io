@@ -38,3 +38,5 @@ I use this application every day at work and it's a life saver. I even added in 
 
 
 Source code found here https://github.com/willdot/uGit 
+
+Feel free to use it, raise any issues or contribute to the project! Next I want to add in the ability to do merges...that sounds like a fun challenge!
