@@ -13,7 +13,7 @@ Let's say I have an enum like this.
 ``` c#
 public enum Things
 {
-    Phone,
+    Phone = 1,
     Bottle,
     Mouse,
     Airpods
@@ -45,3 +45,33 @@ public class ThingsUnitTests
 ```
 
 See how the MemberData attribute is given the name of the method that returns each of the enum values. Then the parameter to the test method is an enum value. In this test I just make sure the value is of my enum type. 
+
+
+## Extra parameters to the static method
+
+What if I wanted to ignore some enum values, because they are irrelevant to the test. You can add parameters to the static method that returns the enum values and then pass an array of values into the MemberData attribute.
+
+``` c#
+public class EnumValueTests
+{
+    [Theory]
+    [MemberData("enumValues", new []{ 1, 2})]
+    public void TestEachType(Things thing)
+    {
+        Assert.IsType<Things>(thing);
+    }
+
+    public static IEnumerable<object[]> enumValues(int[] ignore)
+    {
+        foreach (var thing in Enum.GetValues(typeof(Things)))
+        {
+            if (!ignore.Contains((int)thing))
+            {
+                yield return new object[] { thing };
+            } 
+        }
+    }
+}
+```
+
+Now, my test results will show that only Airpods and mouse are tested. This happens because when looping through each value of my enum, I check if that numeric value is in the array of ints to ignore. It it isn't, then I return it as a value for my test to use.
