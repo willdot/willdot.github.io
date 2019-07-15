@@ -3,7 +3,7 @@ title:  Unit testing every enum value
 author: Will Andrews
 date: 2019-07-15
 order: 27
-published: false
+published: true
 ---
 
 I sometimes have to unit test that a certain things happen depending on a different enum value, and there are always new enum values being added. So I don't have to change my unit tests to add in a new test for the new enum, I use a trick in xUnit to try against every enum value.
