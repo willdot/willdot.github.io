@@ -407,7 +407,7 @@ it should return a response body of
 
 ## CORS - Dreaded CORS
 
-I know for a fact, that when trying to make a call to this server from an Angular app, I will get a cross origin error. So I used a package rs/cors to add in an allowed origin. I then have to slightly tweak the code to start the http server, by creating a new http.Server,passing in a handler and then calling the ListenAndServe method on it. The finished code looks like this.
+I know for a fact, that when trying to make a call to this server from an Angular app, I will get a cross origin error. So I used a package rs/cors to add in an allowed origin. The finished code looks like this.
 
 ``` go
 func main() {
@@ -429,12 +429,11 @@ func main() {
 
     handler := c.Handler(router)
 
-    srv := &http.Server{
-        Handler: handler,
-        Addr:    ":" + PORT,    
-    }
-	
-    log.Fatal(srv.ListenAndServe())
+    err := http.ListenAndServe(":"+PORT, handler)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
