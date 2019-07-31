@@ -16,8 +16,7 @@ It keeps going until the 31st of December where it'll put £3.65 into a savings 
 
 The first few months were fine as it was pennies per month, but soon it started being £30 a month, which soon started eating into my monthly allowance I set myself to spend. I wanted to work out how much I needed from 1 payday until they next, so that I could account for this into my budget (another great thing about Monzo). And this is where I got the idea for this app.
 
-**Pssst** Here's the finished product
-https://1pdailysavingscalculatorapp.azurewebsites.net/
+**Pssst** Here's the finished product [1 Penny Savings Calculator App](https://1pdailysavingscalculatorapp.azurewebsites.net/) 
 
 ## The 1p savings challenge calculator - Requirements
 
