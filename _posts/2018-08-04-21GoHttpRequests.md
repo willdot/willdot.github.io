@@ -29,7 +29,7 @@ request, err := http.NewRequest("", url, body)
 
 After this you can add any headers to the request.
 ```go
-request.Headers.Set("Content-Type", "application/json")
+request.Header.Set("Content-Type", "application/json")
 request.Header.Add("ApiKey", "some api key here")
 ```
 
