@@ -215,7 +215,7 @@ func calculateCostOfDays(start, end int) int {
 
 #### All the pieces of the puzzle
 
-I now have all the functions I need to make this work, so I now crete an exportable function, that accepts a start and end date and returns a calculated figure. I also add in a check, to make sure that the start date, isn't after the end date....
+I now have all the functions I need to make this work, so I now create an exportable function, that accepts a start and end date and returns a calculated figure. I also add in a check, to make sure that the start date, isn't after the end date....
 
 ``` go
 // ErrStartDateAfterEndDate is for when user tries to use a start date that is after the end date
