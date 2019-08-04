@@ -91,13 +91,13 @@ Save(filename.(string), request, FileWriter{})
 On the method I want to test, if I add a field to the struct for a the Writer interface and create a method that creates a new struct with a FileWriter, and it will all work. Then when I want to test my method, I can create a different struct that implements the Writer interface, writer my dummy code in there and pass it to the Struct I want to test, like so:
 
 ``` go
-type IwantToTestThis struct {
-	RealFileWriter Writer
+type IWantToTestThis struct {
+	MyFileWriter Writer
 }
 
 func NewIWantToTestThis() IWantToTestThis {
 	return IWantToTestThis {
-		RealFileWriter : FileWriter{}
+		MyFileWriter : FileWriter{},
 	}
 }
 ```
@@ -113,13 +113,13 @@ func (f FakeFileWriter) WriteFile(filename string, data []byte, perm os.FileMode
 
 func TestThing(t *testing.T) {
 
-	testThing := IwantToTestThis{
-		FileWriter: FakeFileWriter{}
+	testThing := IWantToTestThis{
+		MyFileWriter: FakeFileWriter{},
 	}
 
 	var something map[string]interface{}
 
-	got := testThing.Save("test", something, testThing.FileWriter)
+	got := testThing.Save("test", something, testThing.MyFileWriter)
 
 	if got != nil {
 		t.Errorf("Failed")
