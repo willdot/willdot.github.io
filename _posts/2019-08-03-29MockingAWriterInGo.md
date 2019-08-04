@@ -76,7 +76,7 @@ func Save(filename string, requestData map[string]interface{}, w Writer) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filename+".json", file, 0644)
+	err = w.WriteFile(filename+".json", file, 0644)
 
 	return err
 }
