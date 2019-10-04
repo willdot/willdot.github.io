@@ -69,7 +69,6 @@ func doSomething(ch chan bool) {
 			i++
 			fmt.Println(i)
 		}
-
 	}
 }
 
@@ -80,8 +79,6 @@ func main() {
 	go startSession(sessionFinished)
 
 	doSomething(sessionFinished)
-
-
 }
 ```
 
@@ -117,7 +114,6 @@ func main() {
 	go startSession(sessionTwo, "2")
 
 	doSomething(sessionOne, sessionTwo)
-
 }
 
 func doSomething(ch1, ch2 chan bool) {
@@ -136,7 +132,6 @@ func doSomething(ch1, ch2 chan bool) {
 			i++
 			fmt.Println(i)
 		}
-
 	}
 }
 
