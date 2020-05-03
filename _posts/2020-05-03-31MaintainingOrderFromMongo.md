@@ -68,7 +68,7 @@ Now I have decoded the binary data into a useable type, I want to get that data 
 ### bson.D
 
 This type is the key to this working. What Mongo have done with this type, is basically an ordered map. The docs state:
-```
+``` bash
 type D []DocElem
 
 D represents a BSON document containing ordered elements. For example:
