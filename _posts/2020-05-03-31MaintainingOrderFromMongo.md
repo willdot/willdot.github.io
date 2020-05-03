@@ -1,5 +1,5 @@
 ---
-title:  Maintaining Order of data from Mongo
+title:  Maintaining order of data from Mongo
 author: Will Andrews
 date: 2020-05-03
 order: 31
