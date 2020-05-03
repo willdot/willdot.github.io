@@ -102,10 +102,10 @@ code: func main() {
 line number: 28
 code:     err := errors.New("BANG")
 ---
-line number: 28
+line number: 29
 code:     Bugsnag.notify(err)
 ---
-line number: 29
+line number: 30
 code:  }
 ---
 ```
