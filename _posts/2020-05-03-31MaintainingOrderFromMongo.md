@@ -21,7 +21,7 @@ Recently I've been extracting data from a MongoDB collection, but I've had a req
 }
 ```
 
-Part of the Go language is the type ```map[string]interface``` which is really handy for this type of decoding, because it means you can store pretty much any JSON into this type, and then iterate over it really easily. However, the downside to this is that JSON does not support ordering, and neither do Maps in Go. This proves to be a problem in my case because the order of the code in a stack trace is very important.
+Part of the Go language is the type ```map[string]interface``` which is really handy for this type of decoding, because it means you can store pretty much any JSON / BSON into this type, and then iterate over it really easily. However, the downside to this is that JSON does not support ordering, and neither do Maps in Go. This proves to be a problem in my case because the order of the code in a stack trace is very important.
 
 
 ### ExtendedJSON to the rescue
