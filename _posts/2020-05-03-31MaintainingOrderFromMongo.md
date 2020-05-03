@@ -12,9 +12,11 @@ Recently I've been extracting data from a MongoDB collection, but I've had a req
 {
     "code": {
              "27": "func main() {",
-             "28": "    err := errors.New("BANG")",
-             "29": "    Bugsnag.notify(err)",
-             "30": "}"
+             "28": "    err := someBadFunc()",
+             "29": "    if err != nil {",
+             "30": "        Bugsnag.notify(err)",
+             "31": "    }",
+             "32": "}"
            }
 }
 ```
@@ -100,13 +102,19 @@ line number: 27
 code: func main() {
 ---
 line number: 28
-code:     err := errors.New("BANG")
+code:     err := someBadFunc()
 ---
 line number: 29
-code:     Bugsnag.notify(err)
+code:     if err != nil {
 ---
 line number: 30
-code:  }
+code:         Bugsnag.notify(err)
+---
+line number: 31
+code:     }
+---
+line number: 32
+code: }
 ---
 ```
 
