@@ -119,3 +119,58 @@ code: }
 ```
 
 And you can see it has maintained order!
+
+### What about the other way
+
+I also had a requirement where I needed to take some of the data I had got out of mongo, and turn it into a JSON string. This was things such as metadata, that can't easily be returned over gRPC because it doesn't always have a defined structure. With extended JSON and the mongo library, I was able to do this easily.
+
+Here is my document structure that I decoded out of mongo
+``` go
+type Thing struct {
+   ID       *primitive.ObjectID `bson:"_id,omitempty"`
+   MetaData *bson.D             `bson:"metaData,omitempty"`
+}
+```
+
+Here is the actual document in mongo
+
+```
+{
+    "_id" : ObjectId("5e8cadfd0000474af4010000"),
+    "metaData": {
+        "thing": {
+            "ID": 1,
+            "Name": "thing1"
+        },
+        "otherThing": {
+            "ID": 2,
+            "Name": "thing2"
+        }
+  }
+}
+```
+
+As you can see metadata is made up of 2 different objects.
+
+What I want to do is get that and create a JSON string. If I were to use a JSON library like this: https://github.com/json-iterator/go I would get a JSON string, but I would not retain the order of the data. This means I may end up with otherThing first. Not ideal for my use case.
+
+Instead, I can use the ```bson.MarshalExtJSON``` function and get back an extended JSON string that will retain ordering.
+
+``` go
+func convertToJSONString(input interface{}) (string, error) {
+	if input != nil {
+		inputByteArray, err := bson.MarshalExtJSON(input, false, false)
+
+		if err != nil {
+			return "", errors.Wrap(err, "error converting metadata to JSON string")
+		}
+
+		return string(inputByteArray), nil
+	}
+	return "", nil
+}
+```
+
+First I check if the input is nil and return an empty string if it is. Then I use the ```bson.MarshalExtJSON``` function to get the byte array of my struct. The two false parameters are for canonical and for escaping HTML. Once I've done that I check for errors and then convert the byte array to a string. It's that simple.
+
+I'm almost starting to thing that this bson library is handy to use, even when not dealing with mongo 👀
