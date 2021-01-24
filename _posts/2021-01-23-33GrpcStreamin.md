@@ -19,7 +19,7 @@ I'm only going to focus on server side streaming in this post.
 One thing I discovered when reading about server side streaming, is that a lot of the time it's not actually necessary. That might seem like an odd statement to make when doing a write up on it, but when it is necessary it's a really powerful tool.
 
 ### The response message is too big
-Let's say the message we want to send back is 50mb. Well if you try to do that, you'll get an error because the message is bigger than the 4mb default size limit. So how about splitting the message into chunks and streaming it to the client chunk by chunk. Perfect. Well actually, the easiest thing to is to just increase the size limit on the client to allow this. It's a single line of code in most languages, and for 50mb, is probably all that's needed. However, for very large files, you probably want to send them chunked as sending a single file thats 1GB could take a long time, and if the connection times out 60% of the way through, well that's just annoying. But if we chunk it and send the chunk number and total number of chunks in the response, then if the connection drops and the client has to retry, it can ask the server to chunk it up by ```x``` amount and start sending me the results starting at ```y```.
+Let's say the message we want to send back is 50mb. Well if you try to do that, you'll get an error because the message is bigger than the 4mb default size limit. So how about splitting the message into chunks and streaming it to the client chunk by chunk. Perfect. Well actually, the easiest thing to is to just increase the size limit on the client to allow this. It's a single line of code in most languages, and for 50mb, is probably all that's needed. However, for very large files, you probably want to send them chunked as sending a single file thats 1GB could take a long time, and if the connection times out 60% of the way through, well that's just annoying. But if we chunk it and send the chunk number in the response, then if the connection drops and the client has to retry, it can ask the server to start again starting at a particular chunk number.
 
 ### Send lots of items back
 Proto messages allows you to send a repeated message, so there's no need to stream lots of items back when they can all be send in a single response. However, if the server is having to make lots of calls to a database to get each item, well sending them back 1 by 1 might be quicker. For example:
@@ -29,9 +29,9 @@ A server is querying a database but using paging to do so. If it's an expensive 
 
 ## A simple example
 
-I'm going to demonstrate the fiest use cases of the above; splitting a large file into smaller chunks.
+I'm going to demonstrate the first use cases of the above; splitting a large file into smaller chunks.
 
-First lets create the proto file. I want a request that is going to provide a filename, the number of chunks to split by and the chunk to start at. The last 2 are only used for when retrying after a previous attempt failed. Also defined will be a response that is going to contain the chunk data, the number of chunks the file was split into and the current chunk number.
+First lets create the proto file. I want a request that is going to provide a filename and the chunk to start at. The second is only used for when retrying after a previous attempt failed. Also defined will be a response that is going to contain the chunk data and the current chunk number.
 
 ``` protobuf
 syntax = "proto3";
@@ -45,8 +45,6 @@ service Files {
 message Request {
     // The file name to get
     string name = 1;
-    // The how many chunks to split it by (optional)
-    int32 total_chunks = 2;
     // The chunk number to start at (optional)
     int32 start_at = 3;
 }
@@ -54,10 +52,8 @@ message Request {
 message Response {
     // The data in this chunk
     bytes chunk = 1;
-    // How many chunks the file was split into
-    int32 total_chunks = 2;
     // The current chunk number
-    int32 chunk_number = 3;
+    int32 chunk_number = 2;
 }
 ```
 
@@ -204,23 +200,14 @@ type FileChunks struct{}
 
 type ReturnChunk func(chunk []byte) error
 
-func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string) error {
+const chunkSize = 1024 * 32 // 32kb
 
-	file, err := os.Open(filename)
+func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string) error {
+file, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-
-	fi, err := file.Stat()
-	if err != nil {
-		return err
-	}
-
-	numberOfChunksToSplitBy := int64(4)
-	size := fi.Size()
-
-	chunkSize := size / numberOfChunksToSplitBy
 
 	r := bufio.NewReader(file)
 	b := make([]byte, chunkSize)
@@ -235,12 +222,11 @@ func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string) err
 			return err
 		}
 
+
 		err = chunkFunc(b[0:n])
 		if err != nil {
 			return err
 		}
-
-		fmt.Println(string(b[0:n]))
 	}
 
 	return nil
@@ -250,4 +236,87 @@ func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string) err
 
 Here I have created a struct with a function that takes a chunkFunc (I called it this because it sounded funny to me) and a file name. The chunkFunc is a function declared as a type. This is the same function signature as our wrapped streaming function, so it can be passed in here.
 
-I then have the logic that opens the file, works out how to split the file into chunks (hardcoded 4 chunks, but will make configurable later). Then using the bufio reader type I am able to create a slice of bytes to put my data in (to the size of the chunks I've calculated) ***THIS NEEDS REWORDING*** and then in a loop, read the file and 
+I then have the logic that opens the file and defering the closing of the file. Then using the bufio reader type I am able to create a slice of bytes in the size of 32kb to put my data in. Then on each iteration of a loop, it will call Read() on the reader passing in the bytes buffer to write to. Then checking for errors, because if EOF is received then there's nothing else to read from the file. If there is data then we send only the number of bytes read into the byte slice, because we don't want to send empty data. TODO: word this better and perhaps investigate more
+
+This file handling code is in a different package, and because I will want to want to mock the file handling out when testing my gRPC code, I will use an interface in the gRPC server like so.
+
+``` go
+func main() {
+	// omitted set up code
+	file := files.FileChunks{}
+	pb.RegisterFilesServer(s, &Server{fileChunker: &file})
+	// more omitted code
+}
+
+type Chunker interface {
+	GetFileAndChunk(chunkFunc files.ReturnChunk, filename string) error
+}
+
+type Server struct {
+	fileChunker Chunker
+}
+
+unc (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
+	streamFunc := func(chunk []byte) error {
+		res := &pb.Response{
+			Chunk: chunk,
+		}
+
+		if err := stream.Send(res); err != nil {
+			return errors.Wrap(err, "error streaming response")
+		}
+		return nil
+	}
+
+	s.fileChunker.GetFileAndChunk(streamFunc, req.Name)
+
+	return nil
+}
+```
+
+Now if I want to test my gRPC code but not do any file handling in the file package, I can mock out that interface. // TODO: make that setup more testable
+
+If I were to create large test file called "hello.txt" and run the client, it will stream the entire contents. Success!
+
+Finally it's time to use that retry mechanism. To do this we will need to change the  `GetFileAndChunk` function signature to take a start at parameter and the use that to "ignore" that number of chunks before sending the rest to the client. It will look like this.
+
+``` go
+
+func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string, startAt int32) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	r := bufio.NewReader(file)
+	b := make([]byte, chunkSize)
+
+	currentChunk := int32(-1)
+	for {
+		n, err := r.Read(b)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+
+			fmt.Fprintf(os.Stderr, "Error reading file: %v", err)
+			return err
+		}
+		currentChunk++
+		// ignore this chunk if it's less than the startAt
+		if currentChunk < startAt {
+			continue
+		}
+
+		err = chunkFunc(b[0:n])
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+```
+
+And then the interface in the server will need to be updated and the parameter from the gRPC request can be passed in. Then the client code can then pass in a number in the request, and when the file package is iterating over the file, it will ignore the first `x` number of chunks.
