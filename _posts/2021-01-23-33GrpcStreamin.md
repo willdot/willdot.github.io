@@ -46,7 +46,7 @@ message Request {
     // The file name to get
     string name = 1;
     // The chunk number to start at (optional)
-    int32 start_at = 3;
+    int32 start_at = 2;
 }
 
 message Response {
@@ -68,7 +68,7 @@ const (
 )
 
 func main() {
-	log.Println("server started")
+	fmt.Fprintf(os.Stdout, "server started")
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to listen: %v", err)
@@ -109,7 +109,7 @@ func (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
 		}
 
 		if err := stream.Send(res); err != nil {
-			return errors.Wrap(err, "error streaming response")
+			return err
 		}
 	}
 
@@ -151,7 +151,6 @@ func main() {
 
 		fmt.Fprintf(os.Stdout, "%s ", resp.Chunk)
 	}
-
 }
 ```
 
@@ -161,32 +160,32 @@ Now if you start run the server and then run the client, you should see the hell
 
 ### Passing the streamer around your codebase
 
-In all of the apps I write, I tend to split business logic into a separate package and use interfaces so that I can test each package independently. In our case we want to create a package that will open a file, read the data out of it, split it into chunks and return each chunk individually. But I don't want to pass my streamer to the business logic. So how do we do this?
+In all of the apps I write, I tend to split business logic into a separate package and use interfaces so that I can test each package independently. I also don't think that the gRPC package needs to worry about how to find and open a file and then chunk it up for us.
+
+In our case we want to create a package that will open a file, read the data out of it, split it into chunks and return each chunk individually. But I don't want to pass my streamer to the business logic. So how do we do this?
 
 Wrapper functions!
 
-If we wrap the code that streams the data to the client, in it's own function, we can then pass that function around our app. So that will look like this. Note that I've changed it slightly as we will be dealing with file bytes, and not words any more.
+If we wrap the code that streams the data to the client, in it's own function, we can then pass that function around our app. So that will look like this. (Note that I've changed it slightly as we will be dealing with file bytes, and not strings any more.)
 
 ``` go
-
 func (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
-	helloWorld := []string{"hello", "world"}
-
 	streamFunc := func(chunk []byte) error {
 		res := &pb.Response{
 			Chunk: chunk,
 		}
 
 		if err := stream.Send(res); err != nil {
-			return errors.Wrap(err, "error streaming response")
+			return err
 		}
 		return nil
-    }
-    
-    err := streamFunc(byte("hello"))
-    if err != nil {
-        return err
-    }
+	}
+
+	// just send a single response back for now
+	err := streamFunc(byte("hello"))
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -195,7 +194,6 @@ func (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
 Now that I have the logic to stream the data back to the client wrapped in a variable, I can pass that around as I please. So now lets create the business logic to do so. 
 
 ``` go
-
 type FileChunks struct{}
 
 type ReturnChunk func(chunk []byte) error
@@ -203,16 +201,15 @@ type ReturnChunk func(chunk []byte) error
 const chunkSize = 1024 * 32 // 32kb
 
 func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string) error {
-file, err := os.Open(filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	r := bufio.NewReader(file)
-	b := make([]byte, chunkSize)
+	buf := make([]byte, chunkSize)
 	for {
-		n, err := r.Read(b)
+		n, err := file.Read(buf)
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -222,8 +219,7 @@ file, err := os.Open(filename)
 			return err
 		}
 
-
-		err = chunkFunc(b[0:n])
+		err = chunkFunc(buf[0:n])
 		if err != nil {
 			return err
 		}
@@ -236,7 +232,7 @@ file, err := os.Open(filename)
 
 Here I have created a struct with a function that takes a chunkFunc (I called it this because it sounded funny to me) and a file name. The chunkFunc is a function declared as a type. This is the same function signature as our wrapped streaming function, so it can be passed in here.
 
-I then have the logic that opens the file and defering the closing of the file. Then using the bufio reader type I am able to create a slice of bytes in the size of 32kb to put my data in. Then on each iteration of a loop, it will call Read() on the reader passing in the bytes buffer to write to. Then checking for errors, because if EOF is received then there's nothing else to read from the file. If there is data then we send only the number of bytes read into the byte slice, because we don't want to send empty data. TODO: word this better and perhaps investigate more
+I then have the logic that opens the file and defering the closing of the file. Then I create a slice of bytes in the size of 32kb to put my data in. Then on each iteration of a loop, it will call Read() on the reader passing in the bytes buffer to write to. Then checking for errors, because if EOF is received then there's nothing else to read from the file. If there is data then we send only the number of bytes read into the byte slice, because if the bytes buffer is 32kb but only 5kb have been written to it, we don't want to send 27kb of nothing.
 
 This file handling code is in a different package, and because I will want to want to mock the file handling out when testing my gRPC code, I will use an interface in the gRPC server like so.
 
@@ -256,32 +252,35 @@ type Server struct {
 	fileChunker Chunker
 }
 
-unc (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
+func (s *Server) GetFile(req *pb.Request, stream pb.Files_GetFileServer) error {
 	streamFunc := func(chunk []byte) error {
 		res := &pb.Response{
 			Chunk: chunk,
 		}
 
 		if err := stream.Send(res); err != nil {
-			return errors.Wrap(err, "error streaming response")
+			return err
 		}
 		return nil
 	}
 
-	s.fileChunker.GetFileAndChunk(streamFunc, req.Name)
+	err := s.fileChunker.GetFileAndChunk(streamFunc, req.Name)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 ```
 
-Now if I want to test my gRPC code but not do any file handling in the file package, I can mock out that interface. // TODO: make that setup more testable
+Now if I want to test my gRPC code but not do any file handling in the file package, I can mock out that interface.
 
 If I were to create large test file called "hello.txt" and run the client, it will stream the entire contents. Success!
 
 Finally it's time to use that retry mechanism. To do this we will need to change the  `GetFileAndChunk` function signature to take a start at parameter and the use that to "ignore" that number of chunks before sending the rest to the client. It will look like this.
 
 ``` go
-
+// omitted code ...
 func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string, startAt int32) error {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -289,34 +288,113 @@ func (f *FileChunks) GetFileAndChunk(chunkFunc ReturnChunk, filename string, sta
 	}
 	defer file.Close()
 
-	r := bufio.NewReader(file)
-	b := make([]byte, chunkSize)
+	offset := int32(chunkSize) * startAt
 
-	currentChunk := int32(-1)
+	buf := make([]byte, chunkSize)
 	for {
-		n, err := r.Read(b)
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
+		n, readErr := file.ReadAt(buf, int64(offset))
 
-			fmt.Fprintf(os.Stderr, "Error reading file: %v", err)
+		// since readAt will return EOF even if it's read data, we only want to handle other errors here,
+		// so that we can handle the data read if the error is EOF.
+		if readErr != nil && readErr != io.EOF {
 			return err
 		}
-		currentChunk++
-		// ignore this chunk if it's less than the startAt
-		if currentChunk < startAt {
-			continue
-		}
 
-		err = chunkFunc(b[0:n])
+		err := chunkFunc(buf[0:n], startAt)
 		if err != nil {
 			return err
 		}
+
+		// now handle if EOF
+		if readErr == io.EOF {
+			break
+		}
+
+		// increment the offset that we read at by the chunksize
+		offset += int32(f.ChunkSize)
+		startAt++
 	}
 
 	return nil
 }
 ```
 
-And then the interface in the server will need to be updated and the parameter from the gRPC request can be passed in. Then the client code can then pass in a number in the request, and when the file package is iterating over the file, it will ignore the first `x` number of chunks.
+Note how I changed the function I call on the file. It was `file.Read(buf)` but now I'm using `file.ReadAt(buf, int64(offset))`. This is so that I can read from the file, starting at a given position. 
+
+Another way to do this would be to read the entire file, and then splice the []byte data up using start at, but that would involve reading the entire file into memory each time, and that isn't a good idea. 
+
+Now I can update the interface in the server code to pass in that extra `startAt int32` parameter, and pass in the `startAt` field from the gRPC request.
+
+If I were to start the server up again, and modify the client to use a startAt parameter in the gRPC request, I will get a response back that isn't the entire file, but everything except the first chunk. Nice.
+
+Here is my completed client code. I added a bool flag with some logic to mimic making a gRPC request and only getting the first chunk when the flag is set to true and writing that to a file. Then I can set the bool to be false, and it will get the remaining chunks from the server and append that to the file. 
+
+``` go
+
+const (
+	address    = "localhost:50051"
+	filename   = "test.jpeg"
+	firstChunk = false
+)
+
+func main() {
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewFilesClient(conn)
+
+	startAt := 0
+	if !firstChunk {
+		startAt = 1
+	}
+
+	// make the request and open the stream
+	stream, err := c.GetFile(context.Background(), &pb.Request{Name: filename, StartAt: int32(startAt)})
+
+	// open a file for writing and appending (creating the file if it doesn't exist)
+	// Then after each chunk that is received, we can write the chunk to the file.
+	// If the file already exists, it will append to the file instead of overwriting it
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error opening file: %v", err)
+	}
+	defer f.Close()
+
+	for {
+		// get a stream response
+		resp, err := stream.Recv()
+
+		// if the err is EOF that means there is nothing else to receive so break out and finish
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error streaming data from server: %v", err)
+			return
+		}
+
+		if firstChunk && resp.ChunkNumber >= 1 {
+			continue
+		}
+
+		_, err = f.Write(resp.Chunk)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to write chunk %v to file: %v", resp.Chunk, err)
+		}
+	}
+}
+```
+
+Try this with an image file. One the first attempt with the `firstChunk` flag set to true, the image received won't show any data. But set the flag to false and run again, you'll be able to see the image.
+
+## To sum up
+gRPC streaming is a powerful and neat trick. However, as you can see in the code I've written, it can be quite complex. Sometimes it can be hard as software engineers to not reach for the cool trick because it's fun. Sometimes we need to make sure we only add in complexity if it's actually needed.
+
+When I started this blog post, I had an idea of how I wanted it to go. However it took me a long time to write up because I had so much fun learning about file reading / writing, and how to chunk data up efficiently. Hopefully you will have as much fun reading and playing about with the code yourself.
+
+#### Notes:
+The code in this blog post was written using Go 1.15
