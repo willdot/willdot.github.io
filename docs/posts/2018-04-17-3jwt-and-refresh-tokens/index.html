@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>JWT and Refresh Tokens | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="This is something I&rsquo;ve been playing with for a while and I&rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&rsquo;s given?&rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="JWT and Refresh Tokens" />
+<meta property="og:description" content="This is something I&rsquo;ve been playing with for a while and I&rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&rsquo;s given?&rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.github.io/posts/2018-04-17-3jwt-and-refresh-tokens/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-04-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-04-17T00:00:00+00:00" />
+
+<meta itemprop="name" content="JWT and Refresh Tokens">
+<meta itemprop="description" content="This is something I&rsquo;ve been playing with for a while and I&rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&rsquo;s given?&rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them."><meta itemprop="datePublished" content="2018-04-17T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2018-04-17T00:00:00+00:00" />
+<meta itemprop="wordCount" content="324">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JWT and Refresh Tokens"/>
+<meta name="twitter:description" content="This is something I&rsquo;ve been playing with for a while and I&rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&rsquo;s given?&rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">JWT and Refresh Tokens</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-04-17T00:00:00Z">April 17, 2018</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>This is something I&rsquo;ve been playing with for a while and I&rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&rsquo;s given?&rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them.</p>
+<p>Theory:</p>
+<p>1: User logs in.</p>
+<p>2: Api returns a JWT and a refresh token (Which is a GUID). The API saves the refresh token in a database, with the users email, an expiry and if the token it active (more on that in a bit).</p>
+<p>3: The web app stores the tokens in the local storage and each time an API call is made, sends the JWT as the header, which the API will authenticate.</p>
+<p>4: If the token has expired, then a 401 status is sent back to the web app, so it knows to try the refresh token.</p>
+<p>5: The web app sends the refresh token to an api method, and as long the token is active in the database, not past it&rsquo;s expiry date and for the correct user, then a new JWT and refresh token are sent back to the web app to use and retry the failed api call again.</p>
+<p>6: The api deactivates the old refresh token, so that it can&rsquo;t be used again, but here&rsquo;s the cool bit. If at any point, I fear that there is a breach and the refresh tokens that are currently active are in danger, I can set all the refresh tokens in the database to be inactive, and every user will have to log in again.</p>
+<p>Take a look at my DailyDo git repo for how I implemented this. The AuthenticationTokenController is where most of the magic happens.</p>
+<p><a href="https://github.com/willdot/DailyDo/tree/master/DailyDo.WebApi">https://github.com/willdot/DailyDo/tree/master/DailyDo.WebApi</a></p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.github.io" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

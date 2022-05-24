@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Concurrency in Go | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="In Go, concurrency allows the application to do one thing while it&rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &ldquo;Go Routines&rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Concurrency in Go" />
+<meta property="og:description" content="In Go, concurrency allows the application to do one thing while it&rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &ldquo;Go Routines&rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.github.io/posts/2018-07-05-20goconcurrency/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-07-05T00:00:00+00:00" />
+
+<meta itemprop="name" content="Concurrency in Go">
+<meta itemprop="description" content="In Go, concurrency allows the application to do one thing while it&rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &ldquo;Go Routines&rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread."><meta itemprop="datePublished" content="2018-07-05T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2018-07-05T00:00:00+00:00" />
+<meta itemprop="wordCount" content="682">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Concurrency in Go"/>
+<meta name="twitter:description" content="In Go, concurrency allows the application to do one thing while it&rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &ldquo;Go Routines&rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Concurrency in Go</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-07-05T00:00:00Z">July 5, 2018</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>In Go, concurrency allows the application to do one thing while it&rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &ldquo;Go Routines&rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread. To explain this better, it&rsquo;s probably best to write some examples.</p>
+<h3 id="code-running-in-order-no-concurrency">Code running in order (no concurrency)</h3>
+<p>First of all, lets run some code in order and see what happens.</p>
+<p>Note: When writing out a function, if you put a pair of () at the end of the closing &lsquo;}&rsquo;, it will self execute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Let&#39;s start&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">second</span>) <span style="color:#75715e">// You will need to import the time package 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello World&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Go Go Go&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The output of this will be:</p>
+<pre tabindex="0"><code>Let&#39;s start
+** A 5 second delay **
+Hello World
+Go Go Go
+</code></pre><p>As you can see, we have to wait 5 seconds for something to happen. But why can&rsquo;t we print the Go Go Go to the console while we wait?</p>
+<h3 id="running-concurrently">Running concurrently</h3>
+<p>Now let&rsquo;s get the code to print the Go Go Go code while we wait for the Hello World after the sleep. To do this, we need to use Go routines which is as simple as putting &lsquo;go&rsquo; in front of the function and using a &ldquo;Wait Group&rdquo;.</p>
+<p>The wait group is something that will stop the main function from exiting before all other Go routines have completed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Let&#39;s start concurrently&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// you will nee to import the sync package
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">waitGroup</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">waitGroup</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">waitGroup</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">second</span>) <span style="color:#75715e">// You will need to import the time package
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello World&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">waitGroup</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Go Go Go&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">waitGroup</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will output the following:</p>
+<pre tabindex="0"><code>Let&#39;s start concurrently
+Go Go Go
+** a less than 5 second delay here **
+Hello World
+</code></pre><p>So what&rsquo;s going on in this code?</p>
+<p>1: We create a wait group which is a collection of Go routines that need to be completed before the code can continue.</p>
+<p>2: We say that there are going to be 2 Go routines that we want to add to the wait group.</p>
+<p>3: We use &lsquo;Go&rsquo; in front of the function to indicate that it is a Go routine.</p>
+<p>4: The defer command is an instruction to the function for when it has completed. In this case we are going to tell the wait group that this function is done, and therefore decrement the wait group count.</p>
+<p>5: The waitGroup.Wait() is a blocker that will stop the main function from exiting until all Go routines have completed (the count of go routines has reached 0 by each function using the defer command to say it&rsquo;s done)</p>
+<p>So what happens is the first function starts and then when it gets to the sleep command, the Go routine manager realizes that the application is not doing anything, and it could do something else while it waits. It just so happens that it has another Go routine to execute and so it does that and runs the second function while it&rsquo;s waiting. Then when that&rsquo;s finished, it will go back to the first function and continue to wait for the sleep to finish and then run the rest of the code.</p>
+<p>So as we can see this can be very useful for not wasting time. If we have multiple functions that are doing different things and one of them has to wait for an external service to complete, we may as well do some other work. It&rsquo;s a bit like being a waiter in a restaurant. You take the order of a table and give it to the kitchen to prepare and cook. You wouldn&rsquo;t stand there and wait for them to cook it, you would go back out to the restaurant and take other orders or other jobs.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.github.io" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

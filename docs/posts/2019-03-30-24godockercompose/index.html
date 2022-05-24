@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Hosting a web application and MySql database in a Docker container with Docker Compose | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Hosting a web application and MySql database in a Docker container with Docker Compose" />
+<meta property="og:description" content="So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.github.io/posts/2019-03-30-24godockercompose/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-03-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-03-30T00:00:00+00:00" />
+
+<meta itemprop="name" content="Hosting a web application and MySql database in a Docker container with Docker Compose">
+<meta itemprop="description" content="So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose."><meta itemprop="datePublished" content="2019-03-30T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-03-30T00:00:00+00:00" />
+<meta itemprop="wordCount" content="905">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hosting a web application and MySql database in a Docker container with Docker Compose"/>
+<meta name="twitter:description" content="So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Hosting a web application and MySql database in a Docker container with Docker Compose</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-03-30T00:00:00Z">March 30, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose.</p>
+<h2 id="background-info-on-my-app">Background info on my app</h2>
+<p>I created a Go http server app. Nice simple code. Heading to http://localhost:3001/home will display &ldquo;Hello&rdquo;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;encoding/json&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/gorilla/mux&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">PORT</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">PORT</span> = <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;PORT&#34;</span>); <span style="color:#a6e22e">PORT</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">PORT</span> = <span style="color:#e6db74">&#34;3001&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">router</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">NewRouter</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#a6e22e">home</span>).<span style="color:#a6e22e">Methods</span>(<span style="color:#e6db74">&#34;GET&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">PORT</span>, <span style="color:#a6e22e">router</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">home</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">hello</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>).<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">hello</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I&rsquo;ve also used &ldquo;<a href="https://github.com/kardianos/govendor%22">https://github.com/kardianos/govendor&quot;</a> to create my import vendors folder, so that there&rsquo;s no need for go get in docker</p>
+<h2 id="it-starts-with-a-dockerfile">It starts with a Dockerfile</h2>
+<p>The first thing I do is create my Dockerfile which pulls the latest golang image, copies my code and sets an ENV variable for a port. Nice simple stuff.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> golang:1.12</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> . /go/src/app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /go/src/app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> PORT<span style="color:#f92672">=</span><span style="color:#ae81ff">3001</span>
+</span></span></code></pre></div><p>So this pulls the latest Golang image, adds everything from the current directory into the &ldquo;go/src/app&rdquo; folder, sets that folder as a working directory. Then sets an environment variable to set the port. (Remember in the Go code, there was logic in the main func to get this or use 3001 by default).</p>
+<h2 id="enter-docker-compose">Enter Docker compose</h2>
+<p>Docker Compose is slightly different. It allows lots of builds to be done at once, with once command and one configuration. For example, my web app needs a database, and I&rsquo;m using a MySql database Docker image, I can configure the docker-compose file to create the web app and then the Mysql image, and even configure the connection between the 2. I&rsquo;m just going to create my web app first.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">my-app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">go run main.go</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">.:/go/src/app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/go/src/app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;60:3001&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">PORT</span>: <span style="color:#ae81ff">3001</span>
+</span></span></code></pre></div><p>This is similar to a dockerfile. Under services, you can define and app. Under app you give your container a name, tell it to build, what command you want to run when the container starts up.</p>
+<p>You then give it a volume.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">.:/go/src/app</span>
+</span></span></code></pre></div><p>The above will copy everything from the current directory (sub folders included) and put them into the &ldquo;go/src/app&rdquo; folder in the container.</p>
+<p>Next you specify the working directory of the container, which is the folder we copied all the files into. Then you specify any port mappings. I&rsquo;m mapping port 60 on my local machine to port 3001 on the container.</p>
+<h2 id="spin-it-up">Spin it up!</h2>
+<p>Now that the config is set up, we can run the commands to get things running.</p>
+<p>First run the command to build</p>
+<pre tabindex="0"><code>docker-compose up --build
+</code></pre><p>You will see that you app has been created and if you run docker ps -a in another terminal you will see it open. Then head to localhost:60 and see you app running.</p>
+<h2 id="adding-mysql-into-the-mix">Adding MySql into the mix</h2>
+<p>Now we have our web app up and running, we can add in a database. My web app doesn&rsquo;t use a database yet, but let&rsquo;s pretend it does.</p>
+<p>Configuration looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">my-app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">go run main.go</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">.:/go/src/app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/go/src/app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;60:3001&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">PORT</span>: <span style="color:#ae81ff">3001</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">db</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">mysql:5.7</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">MYSQL_DATABASE</span>: <span style="color:#e6db74">&#39;db&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">MYSQL_USER</span>: <span style="color:#e6db74">&#39;user&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">MYSQL_PASSWORD</span>: <span style="color:#e6db74">&#39;password&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">MYSQL_ROOT_PASSWORD</span>: <span style="color:#e6db74">&#39;password&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;3306:3306&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expose</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># This will open port 3306 on the container</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;3306&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Where our data will be persisted</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">my-db:/var/lib/mysql</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Names our volume</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">my-db</span>:
+</span></span></code></pre></div><p>As you can see it&rsquo;s not that complicated. Tell it to pull an image, set some database enviornment variables for username and passwords. Then set the ports to be used, then expose the container port. Finally add the volume which is where the data will be stored.</p>
+<pre tabindex="0"><code>docker-compose up --build -d
+</code></pre><p>Running this command will not rebuild your web app, because nothing changed, but then create a container for the MySql database.</p>
+<p>If you make some changes to the web app code and re run that command you&rsquo;ll notice that it will only recreated the web app container, but leave the MySql one alone. You can test this by opening up that Database with MySql Workbench, creating a table. Then change your web app code and run the build command. You can also run:</p>
+<pre tabindex="0"><code>docker-compose down
+</code></pre><p>This will stop all containers. Then when you run the up command you will notice it will start the container and your database instance will persist and still have the table you created.</p>
+<p>Using this, along with the backup MySql docker database post I did previously will allow you to keep your test data.</p>
+<h2 id="helpful-commands">Helpful commands</h2>
+<pre tabindex="0"><code>// Start the container if it&#39;s already been built and pick up from where you left off
+docker-compose up
+</code></pre><pre tabindex="0"><code>// Rebuild the container (this will remove everything previously in the container)
+docker-compose up --build
+</code></pre><pre tabindex="0"><code>// using the -d flag will tell it to run disconnected 
+docker-compose up -d
+
+or
+
+docker-compose up --build -d
+</code></pre><pre tabindex="0"><code>// This will show you any previous images that are no longer in use
+docker images -f &#39;dangling=true&#39;
+
+// This will then remove all these images
+docker rmi $(docker images -aq -f &#39;dangling=true&#39;)
+</code></pre><ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.github.io" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

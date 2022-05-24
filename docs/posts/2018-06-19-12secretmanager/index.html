@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Using the Secret Manager in a Net Core ASP project | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.
+Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
+So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Using the Secret Manager in a Net Core ASP project" />
+<meta property="og:description" content="We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.
+Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
+So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.github.io/posts/2018-06-19-12secretmanager/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-06-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-06-19T00:00:00+00:00" />
+
+<meta itemprop="name" content="Using the Secret Manager in a Net Core ASP project">
+<meta itemprop="description" content="We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.
+Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
+So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:"><meta itemprop="datePublished" content="2018-06-19T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2018-06-19T00:00:00+00:00" />
+<meta itemprop="wordCount" content="447">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using the Secret Manager in a Net Core ASP project"/>
+<meta name="twitter:description" content="We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.
+Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
+So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:"/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Using the Secret Manager in a Net Core ASP project</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-06-19T00:00:00Z">June 19, 2018</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.</p>
+<p>Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).</p>
+<p>So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing <!-- raw HTML omitted --> section (There should be the target framework already in there:</p>
+<pre tabindex="0"><code>&lt;PropertyGroup&gt;
+    &lt;UserSecretsId&gt;79a3edd0-2092-40a2-a04d-dcb46d5ca9ed&lt;/UserSecretsId&gt;
+  &lt;/PropertyGroup&gt;
+</code></pre><p>Note that I&rsquo;ve used a GUID inside the tag. This GUID will be used for this project and used as the file reference for this project when the CLI looks for it when prompted.</p>
+<p>So now we can start to use it.</p>
+<p>Open up the CLI and navigate to your projects folder and run the following command to list all secrets (there won&rsquo;t be any yet but it will prove it&rsquo;s working):</p>
+<pre tabindex="0"><code>dotnet user-secrets list
+</code></pre><p>This will show no results, but prove that it&rsquo;s working.</p>
+<p>Now to add a secret, use the following:</p>
+<pre tabindex="0"><code>dotnet user-secrets set &#34;Test&#34; &#34;12345&#34;
+</code></pre><p>This should give a success message, and then when running the list command again, you should see the secret.</p>
+<p>The first string provided (in this instance &ldquo;Test&rdquo;) is the key name and the second string (in this instance &ldquo;12345&rdquo;) is the value.</p>
+<p>Now to remove, use the following:</p>
+<pre tabindex="0"><code>dotnet user-secrets set &#34;Test&#34;
+</code></pre><p>Once again, run the list command and you will see no results.</p>
+<p>To remove all secrets, use the following:</p>
+<pre tabindex="0"><code>dotnet user-secrets clear
+</code></pre><p>Let&rsquo;s use these secrets in code!!!</p>
+<p>In your startup class, in your ConfigureServices method, add in the following to access the secret we added above:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> secret = Configuration[<span style="color:#e6db74">&#34;Test&#34;</span>];
+</span></span></code></pre></div><p>If you have a key in your appsettings.json with the same name as your secret manager, it will automatically use the secret manager version and not your app settings. This means that you don&rsquo;t really need to use appsettings for storing this type of information. Also it means that if you host your app in Azure, you can add your keys and data into the appsettings in the Azure app setting.</p>
+<p>And that&rsquo;s it!! Full code below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Startup(IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// This method gets called by the runtime. Use this method to add services to the container.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> secret = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Test&#34;</span>];
+</span></span><span style="display:flex;"><span>        services.AddMvc();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Configure(IApplicationBuilder app, IHostingEnvironment env)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (env.IsDevelopment())
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            app.UseDeveloperExceptionPage();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        app.UseMvc();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.github.io" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

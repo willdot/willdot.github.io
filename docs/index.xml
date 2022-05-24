@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Willdot</title>
+    <link>https://willdot.github.io/</link>
+    <description>Recent content on Willdot</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Thu, 18 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://willdot.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How the race flag caught me out</title>
+      <link>https://willdot.github.io/posts/2021-02-18-34race/</link>
+      <pubDate>Thu, 18 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2021-02-18-34race/</guid>
+      <description>One of the many strengths of Go is its concurrency. But using concurrency comes with caution. Sometimes it&amp;rsquo;s not necessary and a lot of Go developers jump to using it too soon because they think it&amp;rsquo;ll solve a problem. I&amp;rsquo;m very guilty of having done that many times. However sometimes concurrency comes &amp;ldquo;for free&amp;rdquo; in the sense of http servers.
+Let me explain that a little better. When you create an http server and run it, you can make 1000s of requests to that server and it will handle them concurrently, and you didn&amp;rsquo;t even have to do a thing, other than write ~10 lines of code.</description>
+    </item>
+    
+    <item>
+      <title>Server side streaming gRPC in Go</title>
+      <link>https://willdot.github.io/posts/2021-01-23-33grpcstreamin/</link>
+      <pubDate>Sat, 23 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2021-01-23-33grpcstreamin/</guid>
+      <description>In the world of gRPC most cases will be a request response type of communication. The client sends the request to the server. The server does something, perhaps get some data from a database, and then returns it in a response to the client. This is known as a Unary RPC.
+However there are 3 other types that can be used which involve streaming.
+ Server side - The server sends multiple messages back to the client, who waits for each response Client side - The client sends multiple messages to the server, which waits for each request before sending the response Bidirectional - Both server and client send messages to each other at the same time.</description>
+    </item>
+    
+    <item>
+      <title>Some uses of context with gRPC in Go</title>
+      <link>https://willdot.github.io/posts/2020-09-20-32grpc/</link>
+      <pubDate>Sun, 20 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2020-09-20-32grpc/</guid>
+      <description>In Go there is a package called context, which defines a type that contains deadlines, cancellation signals or some other data and is usually passed from function to function. One of the most common use of the context is the ability to work out if a call should be cancelled.
+For example, when a gRPC request is being handled by a server, the client may have provided a 20 second timeout.</description>
+    </item>
+    
+    <item>
+      <title>Maintaining order of data from Mongo</title>
+      <link>https://willdot.github.io/posts/2020-05-03-31maintainingorderfrommongo/</link>
+      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2020-05-03-31maintainingorderfrommongo/</guid>
+      <description>Recently I&amp;rsquo;ve been extracting data from a MongoDB collection, but I&amp;rsquo;ve had a requirement to keep the ordering of some of the data. For example, some of the data I&amp;rsquo;ve pulled out is stored as a primitive.Binary, and in this binary data is stack trace information. Part of the stack trace is a segment of code, which contains elements line number and code value. So something like this:
+{  &amp;#34;code&amp;#34;: {  &amp;#34;27&amp;#34;: &amp;#34;func main() {&amp;#34;,  &amp;#34;28&amp;#34;: &amp;#34; err := someBadFunc()&amp;#34;,  &amp;#34;29&amp;#34;: &amp;#34; if err !</description>
+    </item>
+    
+    <item>
+      <title>Channels and Go routines</title>
+      <link>https://willdot.github.io/posts/2019-10-04-30channelsingo/</link>
+      <pubDate>Fri, 04 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-10-04-30channelsingo/</guid>
+      <description>I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.
+How I used channels The first thing to create would be the function that sleeps and then writes to the channel when done.
+I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue.</description>
+    </item>
+    
+    <item>
+      <title>How I was able to mock ioutil.WriteFile in go</title>
+      <link>https://willdot.github.io/posts/2019-08-03-29mockingawriteringo/</link>
+      <pubDate>Sat, 03 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-08-03-29mockingawriteringo/</guid>
+      <description>I&amp;rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&amp;rsquo;t want it to call the save function and actually save data to disk.</description>
+    </item>
+    
+    <item>
+      <title>Creating the 1p savings challenge calculator - Pt1 Go Backend</title>
+      <link>https://willdot.github.io/posts/2019-07-31-28pennysavingsapppt1/</link>
+      <pubDate>Wed, 31 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-07-31-28pennysavingsapppt1/</guid>
+      <description>I bank with Monzo (for so many reasons that I won&amp;rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
+1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
+It keeps going until the 31st of December where it&amp;rsquo;ll put £3.</description>
+    </item>
+    
+    <item>
+      <title>Unit testing every enum value</title>
+      <link>https://willdot.github.io/posts/2019-07-15-27dotnetcoreenumunittests/</link>
+      <pubDate>Mon, 15 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-07-15-27dotnetcoreenumunittests/</guid>
+      <description>I sometimes have to unit test that a certain things happen depending on a different enum value, and there are always new enum values being added. So I don&amp;rsquo;t have to change my unit tests to add in a new test for the new enum, I use a trick in xUnit to try against every enum value.
+Let&amp;rsquo;s say I have an enum like this.
+public enum Things {  Phone = 1,  Bottle,  Mouse,  Airpods } I want to be able to loop through each of the values and make sure my test works with each of them.</description>
+    </item>
+    
+    <item>
+      <title>I wrote my first Go app and what I learnt</title>
+      <link>https://willdot.github.io/posts/2019-06-11-25myfirstgoapp/</link>
+      <pubDate>Tue, 11 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-06-11-25myfirstgoapp/</guid>
+      <description>When I&amp;rsquo;m working with multiple branches in Agile projects, I found I was typing git checkout, git commit, git push far too much. And then there the remembering the branch name that I was wanting to checkout (some of them were so long as well&amp;hellip;&amp;hellip;). I decided that I didn&amp;rsquo;t want to use alias, but instead put my knowledge of Go that I had learnt and put it to use. So I wrote a command line app that allows quick shortcuts to be used to do the commands I did the most.</description>
+    </item>
+    
+    <item>
+      <title>Hosting a web application and MySql database in a Docker container with Docker Compose</title>
+      <link>https://willdot.github.io/posts/2019-03-30-24godockercompose/</link>
+      <pubDate>Sat, 30 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2019-03-30-24godockercompose/</guid>
+      <description>So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&amp;rsquo;s where I read about Docker Compose.</description>
+    </item>
+    
+    <item>
+      <title>Creating Mysql databases in Docker</title>
+      <link>https://willdot.github.io/posts/2018-11-09-23dockermysql/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-11-09-23dockermysql/</guid>
+      <description>Recently I&amp;rsquo;ve been playing around with other databases other than Microsoft Sql Server. I&amp;rsquo;ve also been trying to use docker more, so to achieve both of these, I&amp;rsquo;ve been using new database images in Docker.
+Prerequisites   Docker using Linux containers
+  Mysql workbench
+  Create docker container with Mysql image docker run -p 3306:3306 -d --name {container name} -e MYSQL_ROOT_PASSWORD={password} mysql/mysql-server Check container is running docker ps Connect to the Mysql server inside container and create a new user docker exec -it {container name} bash mysql -uroot -p{password} (You&amp;rsquo;ll now be running the Mysql cli)</description>
+    </item>
+    
+    <item>
+      <title>Interfaces in Go</title>
+      <link>https://willdot.github.io/posts/2018-08-12-22gointerfaces/</link>
+      <pubDate>Sun, 12 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-08-12-22gointerfaces/</guid>
+      <description>Interfaces are a very useful part of software development as they allow the code to be decoupled. In Go, a language where there aren&amp;rsquo;t classes, we can use the structs and kind of use them as a class. That way we can create interfaces and then create structs that implement these interfaces.
+Creating an interface in Go Creating an interface is quite easy.
+type SomeService interface {  DoSomething(string) string  DoSomethingElse(int, string) string } Creating a struct and then making it implement the interface Next we create a struct, but instead of putting the functions from the interface inside the struct (because structs can only contain fields), we create the functions and then tell the functions what the receiver is.</description>
+    </item>
+    
+    <item>
+      <title>Making HTTP requests and JSON decoding in Go</title>
+      <link>https://willdot.github.io/posts/2018-08-04-21gohttprequests/</link>
+      <pubDate>Sat, 04 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-08-04-21gohttprequests/</guid>
+      <description>While creating a small command line app to make use of Azure&amp;rsquo;s translation services, I used the built in HTTP request package and the JSON decoding.
+Making HTTP requests There are a few things required to make an HTTP call in Go. First, you need a client.
+client := &amp;amp;http.Client{} You also need a url and if making a post request, a body in the form of JSON.
+url := &amp;#34;http://localhost:80/something&amp;#34;  body := strings.</description>
+    </item>
+    
+    <item>
+      <title>Concurrency in Go</title>
+      <link>https://willdot.github.io/posts/2018-07-05-20goconcurrency/</link>
+      <pubDate>Thu, 05 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-05-20goconcurrency/</guid>
+      <description>In Go, concurrency allows the application to do one thing while it&amp;rsquo;s waiting for something else to happen. So if one method is sleeping or waiting on a response from a service, then it can carry on and do something else in another function. This is done by using something called &amp;ldquo;Go Routines&amp;rdquo; which is Gos clever way of using a single thread and controlling which function or line of code uses this thread.</description>
+    </item>
+    
+    <item>
+      <title>Go structs</title>
+      <link>https://willdot.github.io/posts/2018-07-04-18gostructs/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-04-18gostructs/</guid>
+      <description>This post will go through the use of Structs in Go and give an understanding of what they are used for.
+What&amp;rsquo;s the point of Go structs? Let&amp;rsquo;s say the data types provided to us aren&amp;rsquo;t enough, and we want to create our own. Ones that have different properties of various types.
+Imagine we have a person. This person has a name, age, occupation and height. Well we can create a struct that&amp;rsquo;s a person and then use this in our code.</description>
+    </item>
+    
+    <item>
+      <title>Go variables</title>
+      <link>https://willdot.github.io/posts/2018-07-04-17govariables/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-04-17govariables/</guid>
+      <description>This post will go through the uses of variables in Go.
+Creating a variable name := &amp;#34;will&amp;#34; This has created a variable called &amp;rsquo;name&amp;rsquo; and has the value &amp;ldquo;will&amp;rdquo;. Go knows that this is a string, so you don&amp;rsquo;t need to give it a type.
+Changing the value of a variable If we want to change the value of a variable we do:
+name = &amp;#34;someone else&amp;#34; Creating variables globally for the package If you want to create a few variables that are used in multiple functions within your package, you can declare them in a special way.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Go</title>
+      <link>https://willdot.github.io/posts/2018-07-04-16introtogo/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-04-16introtogo/</guid>
+      <description>If you read my previous post, you&amp;rsquo;ll know that I&amp;rsquo;ve decided to take a dive into the world of Go and how to set up a dev environment to start programming in Go. Next I&amp;rsquo;m going to go into some of the basics of Go.
+Basics So to start off, I&amp;rsquo;ll go through how a go file is constructed. Go is done in &amp;ldquo;Packages&amp;rdquo; or &amp;ldquo;Modules&amp;rdquo;. An application will have a &amp;ldquo;Main&amp;rdquo; package which will be what is run when the application is started.</description>
+    </item>
+    
+    <item>
+      <title>Slices and Maps in Go</title>
+      <link>https://willdot.github.io/posts/2018-07-04-19slicesandmaps/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-04-19slicesandmaps/</guid>
+      <description>This post will go through the use of Slices and Maps in Go. (Is it me that always thinks of pizza when I hear slice!)
+What&amp;rsquo;s a slice? In Go, a slice is a better array. It uses an array in the background to store the values, and the slice that you use in code, contains references to the array segments. This makes it lightweight and easier to manipulate.
+An array has a fixed length, where as a slice can be increased and decreased in size if needed.</description>
+    </item>
+    
+    <item>
+      <title>Setting up a Go dev environment</title>
+      <link>https://willdot.github.io/posts/2018-07-02-15settingupgo/</link>
+      <pubDate>Mon, 02 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-07-02-15settingupgo/</guid>
+      <description>Today I decided to take a step away from the usual stuff I work with (.net, Angular) and learn something new. I have heard a few people tell me that Go is a fun and easy to pick up language and after a bit of Googling, I soon discovered how popular it was. So the next few blog posts will be Go related, starting with this post on setting up a dev environment.</description>
+    </item>
+    
+    <item>
+      <title>SignalR</title>
+      <link>https://willdot.github.io/posts/2018-06-22-14signalr/</link>
+      <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-06-22-14signalr/</guid>
+      <description>SignalR is something that I&amp;rsquo;ve seen pop up a few times but until this week I&amp;rsquo;ve never really taken a good look at it. I found an article about how it was now included as standard within the ASP .Net Core 2.1 SDK, and as I had just installed that, I decided now was the time to take a look.
+After reading a few blog posts on how others had used it, it became apparent that most people use it for messaging apps.</description>
+    </item>
+    
+    <item>
+      <title>Using Azure text translation services</title>
+      <link>https://willdot.github.io/posts/2018-06-20-13usingazuretexttranslationservices/</link>
+      <pubDate>Wed, 20 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-06-20-13usingazuretexttranslationservices/</guid>
+      <description>As part of a discovery task at work, I was asked to take a look at some translation services available. First one I tried was Azure, and I have to say I&amp;rsquo;m really impressed. There is also a free tier to use so there&amp;rsquo;s no need to pay to try it out!
+First you need to get yourself set up with an Azure account and then create a cognitive service for translations.</description>
+    </item>
+    
+    <item>
+      <title>Using the Secret Manager in a Net Core ASP project</title>
+      <link>https://willdot.github.io/posts/2018-06-19-12secretmanager/</link>
+      <pubDate>Tue, 19 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-06-19-12secretmanager/</guid>
+      <description>We&amp;rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&amp;rsquo;s really simple to use.
+Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
+So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:</description>
+    </item>
+    
+    <item>
+      <title>Pushing a local Docker image to an Azure container registry</title>
+      <link>https://willdot.github.io/posts/2018-05-22-10pushingdockerimagetoazurerepo/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-05-22-10pushingdockerimagetoazurerepo/</guid>
+      <description>Push and image from local to Azure Let&amp;rsquo;s say you&amp;rsquo;ve built a web app on your dev machine, created an Image for it, run it locally in a container and you&amp;rsquo;re happy with how it&amp;rsquo;s running. Now you need to deploy that to your container registry which happens to be on Azure. Not a problem.
+First things first, you need to create a Docker image to use. To do that, use a &amp;lsquo;Dockerfile&amp;rsquo; to build an image from your solution.</description>
+    </item>
+    
+    <item>
+      <title>Get Docker container from Azure and run locally</title>
+      <link>https://willdot.github.io/posts/2018-05-17-9gettingdockercontainerfromazure/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-05-17-9gettingdockercontainerfromazure/</guid>
+      <description>So I had a Docker image on an Azure container registry, and I wanted to pull it and run it locally on my machine.
+So with command line I did the following:
+Start Docker on my machine. (I always forget this&amp;hellip;.)
+Login to the Azure registry.
+sudo docker login &amp;lt;servername&amp;gt; -u &amp;lt;username&amp;gt; -p &amp;lt;password&amp;gt; Pull the image that I want. (Tag is optional to get a specific version).
+docker pull &amp;lt;servername&amp;gt;/&amp;lt;registry&amp;gt;/&amp;lt;image&amp;gt;:&amp;lt;tag&amp;gt; Take a look at the images locally so that I can get the image id to start a container.</description>
+    </item>
+    
+    <item>
+      <title>Serving an Angular app locally over https</title>
+      <link>https://willdot.github.io/posts/2018-05-23-11servingangularlocallywithhttps/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-05-23-11servingangularlocallywithhttps/</guid>
+      <description>Had a bit of an issue trying to use
+navigator.geolocation.getCurrentPosition with Safari as it wouldn&amp;rsquo;t allow it over http So to use this, I need to serve my Angular app over https.
+So first things first, I installed a package that contains a dev certificate.
+npm install browser-sync --save-dev Then in the package.json file, I replaced the start script to contain the following (or if you want to be able to use either http or https, then create a new start command such as &amp;lsquo;start-https&amp;rsquo; and put the command in there.</description>
+    </item>
+    
+    <item>
+      <title>Debugging and Angular App in Visual Studio Code</title>
+      <link>https://willdot.github.io/posts/2018-05-11-8vscodedebuggingangular/</link>
+      <pubDate>Fri, 11 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-05-11-8vscodedebuggingangular/</guid>
+      <description>Not being able to debug Angular code in Visual Studio Code always bugged me (pun intended) and then I stumbled across an extension that allows just this!
+It&amp;rsquo;s called &amp;lsquo;Debugger for Chrome&amp;rsquo; and once installed, is very easy to configure.
+First thing to do is press F5 to start debugging and it will ask you for an environment to use. Select &amp;lsquo;Chrome&amp;rsquo;.
+Then it will launch a launch.json file that will have a default configuration populated.</description>
+    </item>
+    
+    <item>
+      <title>.Net Core &#43; Local SQl &#43; Docker &#43; Mac</title>
+      <link>https://willdot.github.io/posts/2018-05-02-7netcoresqldocker/</link>
+      <pubDate>Wed, 02 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-05-02-7netcoresqldocker/</guid>
+      <description>Started working through a PluralSight course on building .NET core API. Really good course and very thorough.
+It got to the stage where using a database was required, and the course used a local SQL database, something that isn&amp;rsquo;t readily available on Visual Studio for Mac. So the work around that I found, which is great because I&amp;rsquo;ve been looking for a use for it, is to use Docker. FINALLY!! A use I&amp;rsquo;ve found for Docker!</description>
+    </item>
+    
+    <item>
+      <title>Angular - Http JSON responses</title>
+      <link>https://willdot.github.io/posts/2018-04-26-6angularandhttpjson/</link>
+      <pubDate>Thu, 26 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-26-6angularandhttpjson/</guid>
+      <description>Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
+.filter(a =&amp;gt; a.Week == weekNumber &amp;amp;&amp;amp; a.</description>
+    </item>
+    
+    <item>
+      <title>Angular Interceptors with some refresh token usage</title>
+      <link>https://willdot.github.io/posts/2018-04-17-4angularinterceptors-with-refresh-tokens/</link>
+      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-17-4angularinterceptors-with-refresh-tokens/</guid>
+      <description>Following on from the Refresh Token post, I thought I would do a quick how to on using this in an Angular app. I heard someone talking about interceptors in Angular and thought I would investigate as they sounded useful. Once I had figured out what they did and how simple they are, it made sense to use them to implement the refresh tokens.
+Interceptors are a piece of code that get run on every http request that the app makes.</description>
+    </item>
+    
+    <item>
+      <title>CORS - What a pain this has been</title>
+      <link>https://willdot.github.io/posts/2018-04-17-5cors/</link>
+      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-17-5cors/</guid>
+      <description>So, I spent 4 or 5 hours banging my head against my desk and battling with code because of a CORS issue.
+I published my new API changes to my Azure app and did the same for my Angular Web App, only to find that now I received a cross origin header error, because he web app and api were on different domains. However, I fixed this issue months ago when I first published them.</description>
+    </item>
+    
+    <item>
+      <title>JWT and Refresh Tokens</title>
+      <link>https://willdot.github.io/posts/2018-04-17-3jwt-and-refresh-tokens/</link>
+      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-17-3jwt-and-refresh-tokens/</guid>
+      <description>This is something I&amp;rsquo;ve been playing with for a while and I&amp;rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &amp;lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&amp;rsquo;s given?&amp;rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&amp;rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them.</description>
+    </item>
+    
+    <item>
+      <title>Git cheatsheet</title>
+      <link>https://willdot.github.io/posts/2018-04-09-2gitcheatsheet/</link>
+      <pubDate>Tue, 10 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-09-2gitcheatsheet/</guid>
+      <description>I&amp;rsquo;m fairly new to using git as a form of source control, so I&amp;rsquo;m always having to look up how to do things using the command line. So here are a few of the commands I use the most.
+Commit and pushing to Git Commit to local repo
+git commit -a -m &amp;#34;Comments here&amp;#34; Push to Git
+git push Add all files
+git add * Add a folder and it&amp;rsquo;s contents</description>
+    </item>
+    
+    <item>
+      <title>First post</title>
+      <link>https://willdot.github.io/posts/2018-04-09-1firstpost/</link>
+      <pubDate>Mon, 09 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/2018-04-09-1firstpost/</guid>
+      <description>Welcome to my blog. My goal for this blog is to put up things that I&amp;rsquo;m currently working on such as personal project, but more importantly, code examples on how to do things. I currently have how to guides and short scripts all over the place, so this will be my main go to site for these things.</description>
+    </item>
+    
+  </channel>
+</rss>
