@@ -263,13 +263,13 @@ An array has a fixed length, where as a slice can be increased and decreased in 
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
-      <a href="/posts/2018-06-22-14signalr/" class="link black dim">
-        SignalR
+      <a href="/posts/2018-05-22-10pushingdockerimagetoazurerepo/" class="link black dim">
+        Pushing a local Docker image to an Azure container registry
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
-      SignalR is something that I&rsquo;ve seen pop up a few times but until this week I&rsquo;ve never really taken a good look at it. I found an article about how it was now included as standard within the ASP .Net Core 2.1 SDK, and as I had just installed that, I decided now was the time to take a look.
-After reading a few blog posts on how others had used it, it became apparent that most people use it for messaging apps.
+      Push and image from local to Azure Let&rsquo;s say you&rsquo;ve built a web app on your dev machine, created an Image for it, run it locally in a container and you&rsquo;re happy with how it&rsquo;s running. Now you need to deploy that to your container registry which happens to be on Azure. Not a problem.
+First things first, you need to create a Docker image to use. To do that, use a &lsquo;Dockerfile&rsquo; to build an image from your solution.
     </div>
   </div>
 </div>
@@ -294,13 +294,10 @@ After reading a few blog posts on how others had used it, it became apparent tha
         <a href="/posts/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
       </li>
       <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
-      </li>
-      <li class="page-item">
         <a href="/posts/page/3/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
       </li>
       <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+        <a href="/posts/page/3/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
       </li>
     </ul></article>
 

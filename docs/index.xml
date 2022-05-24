@@ -80,14 +80,13 @@ It keeps going until the 31st of December where it&amp;rsquo;ll put £3.</descri
     </item>
     
     <item>
-      <title>Unit testing every enum value</title>
-      <link>https://willdot.github.io/posts/2019-07-15-27dotnetcoreenumunittests/</link>
-      <pubDate>Mon, 15 Jul 2019 00:00:00 +0000</pubDate>
+      <title>Intro to Microservices and gRPC - part 1</title>
+      <link>https://willdot.github.io/posts/2019-06-13-26introtogrpc/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://willdot.github.io/posts/2019-07-15-27dotnetcoreenumunittests/</guid>
-      <description>I sometimes have to unit test that a certain things happen depending on a different enum value, and there are always new enum values being added. So I don&amp;rsquo;t have to change my unit tests to add in a new test for the new enum, I use a trick in xUnit to try against every enum value.
-Let&amp;rsquo;s say I have an enum like this.
-public enum Things {  Phone = 1,  Bottle,  Mouse,  Airpods } I want to be able to loop through each of the values and make sure my test works with each of them.</description>
+      <guid>https://willdot.github.io/posts/2019-06-13-26introtogrpc/</guid>
+      <description>After I made my first CLI Go application, I fancied having a go at microservices, as I had read that Go was perfect for it. I found a really good guide online, walking me through the creation of a couple of Microservices, and once I had finished that I worked on moving my Daily Do project into a Microservice structure. I also found another user for Docker containers&amp;hellip;.whoop whoop!
+gRPC I had seen this before on some sites when reading about Go, and assumed the &amp;lsquo;g&amp;rsquo; stood for Go.</description>
     </item>
     
     <item>
@@ -206,37 +205,6 @@ An array has a fixed length, where as a slice can be increased and decreased in 
     </item>
     
     <item>
-      <title>SignalR</title>
-      <link>https://willdot.github.io/posts/2018-06-22-14signalr/</link>
-      <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-06-22-14signalr/</guid>
-      <description>SignalR is something that I&amp;rsquo;ve seen pop up a few times but until this week I&amp;rsquo;ve never really taken a good look at it. I found an article about how it was now included as standard within the ASP .Net Core 2.1 SDK, and as I had just installed that, I decided now was the time to take a look.
-After reading a few blog posts on how others had used it, it became apparent that most people use it for messaging apps.</description>
-    </item>
-    
-    <item>
-      <title>Using Azure text translation services</title>
-      <link>https://willdot.github.io/posts/2018-06-20-13usingazuretexttranslationservices/</link>
-      <pubDate>Wed, 20 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-06-20-13usingazuretexttranslationservices/</guid>
-      <description>As part of a discovery task at work, I was asked to take a look at some translation services available. First one I tried was Azure, and I have to say I&amp;rsquo;m really impressed. There is also a free tier to use so there&amp;rsquo;s no need to pay to try it out!
-First you need to get yourself set up with an Azure account and then create a cognitive service for translations.</description>
-    </item>
-    
-    <item>
-      <title>Using the Secret Manager in a Net Core ASP project</title>
-      <link>https://willdot.github.io/posts/2018-06-19-12secretmanager/</link>
-      <pubDate>Tue, 19 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-06-19-12secretmanager/</guid>
-      <description>We&amp;rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&amp;rsquo;s really simple to use.
-Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
-So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:</description>
-    </item>
-    
-    <item>
       <title>Pushing a local Docker image to an Azure container registry</title>
       <link>https://willdot.github.io/posts/2018-05-22-10pushingdockerimagetoazurerepo/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
@@ -244,106 +212,6 @@ So to use, open up the .csproj file of your .Net Core ASP web application and ad
       <guid>https://willdot.github.io/posts/2018-05-22-10pushingdockerimagetoazurerepo/</guid>
       <description>Push and image from local to Azure Let&amp;rsquo;s say you&amp;rsquo;ve built a web app on your dev machine, created an Image for it, run it locally in a container and you&amp;rsquo;re happy with how it&amp;rsquo;s running. Now you need to deploy that to your container registry which happens to be on Azure. Not a problem.
 First things first, you need to create a Docker image to use. To do that, use a &amp;lsquo;Dockerfile&amp;rsquo; to build an image from your solution.</description>
-    </item>
-    
-    <item>
-      <title>Get Docker container from Azure and run locally</title>
-      <link>https://willdot.github.io/posts/2018-05-17-9gettingdockercontainerfromazure/</link>
-      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-05-17-9gettingdockercontainerfromazure/</guid>
-      <description>So I had a Docker image on an Azure container registry, and I wanted to pull it and run it locally on my machine.
-So with command line I did the following:
-Start Docker on my machine. (I always forget this&amp;hellip;.)
-Login to the Azure registry.
-sudo docker login &amp;lt;servername&amp;gt; -u &amp;lt;username&amp;gt; -p &amp;lt;password&amp;gt; Pull the image that I want. (Tag is optional to get a specific version).
-docker pull &amp;lt;servername&amp;gt;/&amp;lt;registry&amp;gt;/&amp;lt;image&amp;gt;:&amp;lt;tag&amp;gt; Take a look at the images locally so that I can get the image id to start a container.</description>
-    </item>
-    
-    <item>
-      <title>Serving an Angular app locally over https</title>
-      <link>https://willdot.github.io/posts/2018-05-23-11servingangularlocallywithhttps/</link>
-      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-05-23-11servingangularlocallywithhttps/</guid>
-      <description>Had a bit of an issue trying to use
-navigator.geolocation.getCurrentPosition with Safari as it wouldn&amp;rsquo;t allow it over http So to use this, I need to serve my Angular app over https.
-So first things first, I installed a package that contains a dev certificate.
-npm install browser-sync --save-dev Then in the package.json file, I replaced the start script to contain the following (or if you want to be able to use either http or https, then create a new start command such as &amp;lsquo;start-https&amp;rsquo; and put the command in there.</description>
-    </item>
-    
-    <item>
-      <title>Debugging and Angular App in Visual Studio Code</title>
-      <link>https://willdot.github.io/posts/2018-05-11-8vscodedebuggingangular/</link>
-      <pubDate>Fri, 11 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-05-11-8vscodedebuggingangular/</guid>
-      <description>Not being able to debug Angular code in Visual Studio Code always bugged me (pun intended) and then I stumbled across an extension that allows just this!
-It&amp;rsquo;s called &amp;lsquo;Debugger for Chrome&amp;rsquo; and once installed, is very easy to configure.
-First thing to do is press F5 to start debugging and it will ask you for an environment to use. Select &amp;lsquo;Chrome&amp;rsquo;.
-Then it will launch a launch.json file that will have a default configuration populated.</description>
-    </item>
-    
-    <item>
-      <title>.Net Core &#43; Local SQl &#43; Docker &#43; Mac</title>
-      <link>https://willdot.github.io/posts/2018-05-02-7netcoresqldocker/</link>
-      <pubDate>Wed, 02 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-05-02-7netcoresqldocker/</guid>
-      <description>Started working through a PluralSight course on building .NET core API. Really good course and very thorough.
-It got to the stage where using a database was required, and the course used a local SQL database, something that isn&amp;rsquo;t readily available on Visual Studio for Mac. So the work around that I found, which is great because I&amp;rsquo;ve been looking for a use for it, is to use Docker. FINALLY!! A use I&amp;rsquo;ve found for Docker!</description>
-    </item>
-    
-    <item>
-      <title>Angular - Http JSON responses</title>
-      <link>https://willdot.github.io/posts/2018-04-26-6angularandhttpjson/</link>
-      <pubDate>Thu, 26 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-04-26-6angularandhttpjson/</guid>
-      <description>Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
-.filter(a =&amp;gt; a.Week == weekNumber &amp;amp;&amp;amp; a.</description>
-    </item>
-    
-    <item>
-      <title>Angular Interceptors with some refresh token usage</title>
-      <link>https://willdot.github.io/posts/2018-04-17-4angularinterceptors-with-refresh-tokens/</link>
-      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-04-17-4angularinterceptors-with-refresh-tokens/</guid>
-      <description>Following on from the Refresh Token post, I thought I would do a quick how to on using this in an Angular app. I heard someone talking about interceptors in Angular and thought I would investigate as they sounded useful. Once I had figured out what they did and how simple they are, it made sense to use them to implement the refresh tokens.
-Interceptors are a piece of code that get run on every http request that the app makes.</description>
-    </item>
-    
-    <item>
-      <title>CORS - What a pain this has been</title>
-      <link>https://willdot.github.io/posts/2018-04-17-5cors/</link>
-      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-04-17-5cors/</guid>
-      <description>So, I spent 4 or 5 hours banging my head against my desk and battling with code because of a CORS issue.
-I published my new API changes to my Azure app and did the same for my Angular Web App, only to find that now I received a cross origin header error, because he web app and api were on different domains. However, I fixed this issue months ago when I first published them.</description>
-    </item>
-    
-    <item>
-      <title>JWT and Refresh Tokens</title>
-      <link>https://willdot.github.io/posts/2018-04-17-3jwt-and-refresh-tokens/</link>
-      <pubDate>Tue, 17 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-04-17-3jwt-and-refresh-tokens/</guid>
-      <description>This is something I&amp;rsquo;ve been playing with for a while and I&amp;rsquo;ve had JWT implemented for a while in my web app, however something that always bugged me was &amp;lsquo;How do you stop the user having to log in again, if the JWT expires after the short life span it&amp;rsquo;s given?&amp;rsquo;. Refresh tokens. There seemed to be so many different ways to implement this, and it&amp;rsquo;s a sea of confusion so for my needs, I created a hybrid of some of them.</description>
-    </item>
-    
-    <item>
-      <title>Git cheatsheet</title>
-      <link>https://willdot.github.io/posts/2018-04-09-2gitcheatsheet/</link>
-      <pubDate>Tue, 10 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/2018-04-09-2gitcheatsheet/</guid>
-      <description>I&amp;rsquo;m fairly new to using git as a form of source control, so I&amp;rsquo;m always having to look up how to do things using the command line. So here are a few of the commands I use the most.
-Commit and pushing to Git Commit to local repo
-git commit -a -m &amp;#34;Comments here&amp;#34; Push to Git
-git push Add all files
-git add * Add a folder and it&amp;rsquo;s contents</description>
     </item>
     
     <item>
