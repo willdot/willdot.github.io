@@ -1,3 +1,0 @@
-Keep count of post count so that when creating a new post, the 'order' property at the top of the post can be added correctly.
-
-20

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Angular - Http JSON responses | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
+.filter(a =&gt; a.Week == weekNumber &amp;&amp; a.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Angular - Http JSON responses" />
+<meta property="og:description" content="Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
+.filter(a =&gt; a.Week == weekNumber &amp;&amp; a." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.net/posts/2018-04-26-6angularandhttpjson/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-04-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-04-26T00:00:00+00:00" />
+
+<meta itemprop="name" content="Angular - Http JSON responses">
+<meta itemprop="description" content="Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
+.filter(a =&gt; a.Week == weekNumber &amp;&amp; a."><meta itemprop="datePublished" content="2018-04-26T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2018-04-26T00:00:00+00:00" />
+<meta itemprop="wordCount" content="193">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Angular - Http JSON responses"/>
+<meta name="twitter:description" content="Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
+.filter(a =&gt; a.Week == weekNumber &amp;&amp; a."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Angular - Http JSON responses</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-04-26T00:00:00Z">April 26, 2018</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Week</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">weekNumber</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">SeasonType</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">seasonType</span>);
+</span></span></code></pre></div><p>I was getting no objects returned from my filter. After a bit of head banging against my desk, I noticed that the JSON data was using camel case for the property names.</p>
+<p>So I made a change and tried this instead, just to see what the outcome was.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">a</span>[<span style="color:#e6db74">&#39;week&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">weekNumber</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">a</span>[<span style="color:#e6db74">&#39;seasonType&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">seasonType</span>);
+</span></span></code></pre></div><p>It worked, interesting. So instead of doing that, I went through all my Angular classes an changed all the property names to use camel case, switched back to my original filter code and everything worked.</p>
+<p>Apparently, .Net api defaults to returning JSON in camel case, but there is a way to change this! Will give this a go later and see what happens.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.net" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

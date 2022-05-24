@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Creating the 1p savings challenge calculator - Pt1 Go Backend | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="I bank with Monzo (for so many reasons that I won&rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
+1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
+It keeps going until the 31st of December where it&rsquo;ll put £3.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Creating the 1p savings challenge calculator - Pt1 Go Backend" />
+<meta property="og:description" content="I bank with Monzo (for so many reasons that I won&rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
+1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
+It keeps going until the 31st of December where it&rsquo;ll put £3." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.net/posts/2019-07-31-28pennysavingsapppt1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-07-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-07-31T00:00:00+00:00" />
+
+<meta itemprop="name" content="Creating the 1p savings challenge calculator - Pt1 Go Backend">
+<meta itemprop="description" content="I bank with Monzo (for so many reasons that I won&rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
+1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
+It keeps going until the 31st of December where it&rsquo;ll put £3."><meta itemprop="datePublished" content="2019-07-31T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-07-31T00:00:00+00:00" />
+<meta itemprop="wordCount" content="2098">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Creating the 1p savings challenge calculator - Pt1 Go Backend"/>
+<meta name="twitter:description" content="I bank with Monzo (for so many reasons that I won&rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
+1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
+It keeps going until the 31st of December where it&rsquo;ll put £3."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Creating the 1p savings challenge calculator - Pt1 Go Backend</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-07-31T00:00:00Z">July 31, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>I bank with Monzo (for so many reasons that I won&rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:</p>
+<p>1st January it puts 1p into a savings pot.
+2nd January it puts 2p into a savings pot.
+3rd January it puts 3p into a savings pot.</p>
+<p>It keeps going until the 31st of December where it&rsquo;ll put £3.65 into a savings pot.</p>
+<p>The first few months were fine as it was pennies per month, but soon it started being £30 a month, which soon started eating into my monthly allowance I set myself to spend. I wanted to work out how much I needed from 1 payday until they next, so that I could account for this into my budget (another great thing about Monzo). And this is where I got the idea for this app.</p>
+<p><strong>Pssst</strong> Here&rsquo;s the finished product <a href="https://1pdailysavingscalculatorapp.azurewebsites.net/">1 Penny Savings Calculator App</a></p>
+<h2 id="the-1p-savings-challenge-calculator---requirements">The 1p savings challenge calculator - Requirements</h2>
+<ul>
+<li>Like most people, I get a set payday but if that day falls on a weekend or bank holiday, its the closest working day. So I need to be able to say how much will be deposited into my savings jar between payday on date &lsquo;X&rsquo; and the day before the next payday on date &lsquo;Y&rsquo;.
+<!-- raw HTML omitted --></li>
+<li>It runs from 1st January until 31st December, so day 1 will always be 1st January. But with 2020 being a leap year, the 31st December won&rsquo;t be day 365 like it is this year. So leap years need to be taking into account.
+<!-- raw HTML omitted --></li>
+<li>I&rsquo;m learning Go at the moment, so the backend will be written in Go.
+<!-- raw HTML omitted --></li>
+<li>It needs to be hosted on Azure and containerized, so using Docker is required.
+<!-- raw HTML omitted --></li>
+<li>There will need to be a front end, and as I&rsquo;m still learning Angular, this framework will be used.</li>
+</ul>
+<h2 id="the-library-package-to-calculate-the-amount-saved">The library package to calculate the amount saved</h2>
+<p>I need to create a package that will take 2 dates, a start and end date and then return a result that will be how much will be saved between these 2 dates. I&rsquo;m creating a package instead of having functions on my main server code, so that the code for calculating this can be used by others. &lt;3 open source.</p>
+<h4 id="testing-testing-123">Testing testing, 123</h4>
+<p>When I write packages like this, I like to use TDD so that it&rsquo;s not over complicated.</p>
+<p>The first thing I need to work out, is the first day of the year, of the dates passed in. So for 28/04/2019 I need to return 1/1/2019.</p>
+<p>The test code I used is this, which will try 2 test dates. 28/4/2019 which will return 1/1/2019 and 28/4/2022 which will return 1/1/2022.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCalculateStartDateOfYear</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cases</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>        <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">CurrentYear</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Expected</span>    <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>	}{
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;2019&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">4</span>), <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;2022&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2022</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">4</span>), <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2022</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">test</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cases</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">got</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateStartDateOfYear</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">CurrentYear</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">got</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;got %v, want %v&#34;</span>, <span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		})
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now to implement the &lsquo;calculateStartDateOfYear&rsquo; code. Nice and simple. Get the year value of the incoming date and return a new date with that year.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">calculateStartDateOfYear</span>(<span style="color:#a6e22e">currentDate</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">currentDate</span>.<span style="color:#a6e22e">Date</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="get-the-day-number-of-the-year">Get the day number of the year</h4>
+<p>Next I need to work out the day numbers of each date. So 4th January will be day 4 of the year. 3rd Feb will be day 34 of the year.</p>
+<p>So I need a function that will calculate the number of days between 2 dates. The first date will be the 1st January of the current year. The next date will either be the start of end date the user has requested.</p>
+<p>Here is the test code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCalculateDaysBetween</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cases</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>     <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Start</span>    <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">End</span>      <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Expected</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	}{
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 2nd Jan&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Feb to 28th feb&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">2</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">2</span>), <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">28</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 31st dec - leap year&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2020</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2020</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">12</span>), <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">366</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 31st dec&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">12</span>), <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">365</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">test</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cases</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">got</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateDaysBetween</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Start</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">End</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">got</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;got %v, want %v&#34;</span>, <span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		})
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here is the implementation code. In Go, to get the difference between 2 dates, you take away the start date from the end date and it returns the duration, of which you can specify the units. So seconds, minutes or hours. It won&rsquo;t return days, so I divide the hours by 24 to get the days.</p>
+<p>Note, this also takes into account leap years, which is also one of our requirements.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">calculateDaysBetween</span>(<span style="color:#a6e22e">start</span>, <span style="color:#a6e22e">end</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">days</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">end</span>.<span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">start</span>).<span style="color:#a6e22e">Hours</span>() <span style="color:#f92672">/</span> <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> int(<span style="color:#a6e22e">days</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="how-much">How much?!</h4>
+<p>Now that I can get the number of days between the first of the year and each of the dates given by the user, I can use these figures to work out how much will be saved between the dates.</p>
+<p>So for the total for day 1 of the year and day 2 of the year will be 3 (1p + 2p). The total for day 32 of the year (1st Feb) and day 59 (28th Feb) will be 66795 (32 + 33 + 34 &hellip;. and so on).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCalculateCostOfDays</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cases</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>     <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Start</span>    <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">End</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Expected</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	}{
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 2nd Jan&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Feb to 28th feb&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">32</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">59</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">1274</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;Whole year&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">365</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">66795</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">test</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cases</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">got</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateCostOfDays</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Start</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">End</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">got</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;got %v, want %v&#34;</span>, <span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		})
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To achieve this, I used a simple loop to go through each day until the last day, adding each day as I went along.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">calculateCostOfDays</span>(<span style="color:#a6e22e">start</span>, <span style="color:#a6e22e">end</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">start</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">end</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">result</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="all-the-pieces-of-the-puzzle">All the pieces of the puzzle</h4>
+<p>I now have all the functions I need to make this work, so I now create an exportable function, that accepts a start and end date and returns a calculated figure. I also add in a check, to make sure that the start date, isn&rsquo;t after the end date&hellip;.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// ErrStartDateAfterEndDate is for when user tries to use a start date that is after the end date
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ErrStartDateAfterEndDate</span> = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Start date can&#39;t be after end date&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// CalculateHowMuchToSaveBetweenDays takes a start date and an end date and returns how much to save for this period
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CalculateHowMuchToSaveBetweenDays</span>(<span style="color:#a6e22e">start</span>, <span style="color:#a6e22e">end</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) (<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">end</span>.<span style="color:#a6e22e">Before</span>(<span style="color:#a6e22e">start</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">ErrStartDateAfterEndDate</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">yearStart</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateStartDateOfYear</span>(<span style="color:#a6e22e">start</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">startDayFromFirstOfYear</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateDaysBetween</span>(<span style="color:#a6e22e">yearStart</span>, <span style="color:#a6e22e">start</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">endDayFromFirstOfYear</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateDaysBetween</span>(<span style="color:#a6e22e">yearStart</span>, <span style="color:#a6e22e">end</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">totalToSave</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculateCostOfDays</span>(<span style="color:#a6e22e">startDayFromFirstOfYear</span>, <span style="color:#a6e22e">endDayFromFirstOfYear</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">totalToSave</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And of course, there were some tests.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCalculateHowMuchToSaveBetweenDays</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cases</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>          <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Start</span>         <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">End</span>           <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Expected</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ExpectedError</span> <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>	}{
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 2nd Jan&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Feb to 28th feb&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">2</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">2</span>), <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">1274</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 31st Dec 2019&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2019</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">12</span>), <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">66795</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;1st Jan to 31st Dec 2020 (leap year)&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2020</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2020</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">12</span>), <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">67161</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;Start date after end date&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2021</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2020</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Month</span>(<span style="color:#ae81ff">12</span>), <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">ErrStartDateAfterEndDate</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">test</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cases</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">CalculateHowMuchToSaveBetweenDays</span>(<span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Start</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">End</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">ExpectedError</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;got error %v, want %v&#34;</span>, <span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">ExpectedError</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">got</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;got %v, want %v&#34;</span>, <span style="color:#a6e22e">got</span>, <span style="color:#a6e22e">test</span>.<span style="color:#a6e22e">Expected</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		})
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="a-go-http-server">A Go http server</h2>
+<p>Now I have the package to do the calculation, I need a HTTP server that my Angular app will call, with 2 dates and will then use the calculator package. In Go this is super easy to create a http server.</p>
+<p>I will be using the Gorilla/Mux package which makes the routing of handlers super easy.</p>
+<p>First thing I do is create a new Mux router. I then use the built in http package to start a http server, passing the router and a port. That&rsquo;s how easy it is to create a http server in Go!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/gorilla/mux&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">PORT</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">PORT</span> = <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;PORT&#34;</span>); <span style="color:#a6e22e">PORT</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">PORT</span> = <span style="color:#e6db74">&#34;8080&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">router</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">NewRouter</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">PORT</span>, <span style="color:#a6e22e">router</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I now need to create a route and a handler that will handle my calculate request. To do this I create a new function that takes a http.ResponseWriter and a http.Request. Once I have this, I tell my router to add a new route by calling the HandleFunc method, passing it a route path and a handler function.</p>
+<p>My handler will try and decode a request body which should be in JSON. This body should contain 2 properties. A start date and end date. It will then use the calculate package to work out how much is needed between these 2 dates, and then return it in the response as JSON.</p>
+<p>I&rsquo;ve also added in some error handling so that if decoding the body fails or the calculation fails, it will return a http 400 error response.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">request</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Start</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">End</span>   <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetBudget</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">req</span> <span style="color:#a6e22e">request</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">decoder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">decoder</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">req</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>(), <span style="color:#ae81ff">400</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">amount</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">calculator</span>.<span style="color:#a6e22e">CalculateHowMuchToSaveBetweenDays</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Start</span>, <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">End</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>(), <span style="color:#ae81ff">400</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;£%v&#34;</span>, float64(<span style="color:#a6e22e">amount</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>).<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now I can plug this into my main function code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>    <span style="color:#a6e22e">router</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">NewRouter</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/calculate&#34;</span>, <span style="color:#a6e22e">GetBudget</span>)
+</span></span></code></pre></div><p>Now, if I run my main.go code, and open up Postman to send a POST request to http://localhost:8080/calulate with a body of &hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Start&#34;</span> : <span style="color:#e6db74">&#34;2019-01-01T00:00:00Z&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;End&#34;</span> : <span style="color:#e6db74">&#34;2019-01-02T00:00:00Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>it should return a response body of</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;£0.01&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="cors---dreaded-cors">CORS - Dreaded CORS</h2>
+<p>I know for a fact, that when trying to make a call to this server from an Angular app, I will get a cross origin error. So I used a package rs/cors to add in an allowed origin. The finished code looks like this.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">PORT</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">PORT</span> = <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;PORT&#34;</span>); <span style="color:#a6e22e">PORT</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">PORT</span> = <span style="color:#e6db74">&#34;8080&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">router</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">NewRouter</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/calculate&#34;</span>, <span style="color:#a6e22e">GetBudget</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">cors</span>.<span style="color:#a6e22e">Options</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">AllowedOrigins</span>: []<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;http://localhost:3001&#34;</span>,
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">handler</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Handler</span>(<span style="color:#a6e22e">router</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">PORT</span>, <span style="color:#a6e22e">handler</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="enter-docker">Enter Docker</h2>
+<p>Now that I have everything for my back end in place, I need to create a Docker image for it, so that it can be containerized on Azure.</p>
+<p>That&rsquo;s nice and simple.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#75715e"># Specify the base image needed for the Go application</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> golang:1.12</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Create an /app directory within the image that will hold the application</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># source files</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> mkdir /app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Copy everything in the root directory into the /app directory</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> . /app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Specify that all other commands will now come from within the /app directory</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Go get dependancies</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> go get -d -v ./...<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Run go build to compile the binary executable of the Go program</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> go build -o main .<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Start command that will run the program</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;/app/main&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><h2 id="coming-up">Coming up</h2>
+<p>The next post will be on creating the Angular app that will call this http server and display the result to the user.</p>
+<p>Source code for this can be found on Github here: <a href="https://github.com/willdot/PennySavingsCalculator">1 Penny Savings Calculator project</a></p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.net" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
