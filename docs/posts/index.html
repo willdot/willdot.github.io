@@ -222,14 +222,13 @@ It keeps going until the 31st of December where it&rsquo;ll put £3.
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
-      <a href="/posts/2019-07-15-27dotnetcoreenumunittests/" class="link black dim">
-        Unit testing every enum value
+      <a href="/posts/2019-06-13-26introtogrpc/" class="link black dim">
+        Intro to Microservices and gRPC - part 1
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
-      I sometimes have to unit test that a certain things happen depending on a different enum value, and there are always new enum values being added. So I don&rsquo;t have to change my unit tests to add in a new test for the new enum, I use a trick in xUnit to try against every enum value.
-Let&rsquo;s say I have an enum like this.
-public enum Things {  Phone = 1,  Bottle,  Mouse,  Airpods } I want to be able to loop through each of the values and make sure my test works with each of them.
+      After I made my first CLI Go application, I fancied having a go at microservices, as I had read that Go was perfect for it. I found a really good guide online, walking me through the creation of a couple of Microservices, and once I had finished that I worked on moving my Daily Do project into a Microservice structure. I also found another user for Docker containers&hellip;.whoop whoop!
+gRPC I had seen this before on some sites when reading about Go, and assumed the &lsquo;g&rsquo; stood for Go.
     </div>
   </div>
 </div>
@@ -288,13 +287,10 @@ public enum Things {  Phone = 1,  Bottle,  Mouse,  Airpods } I want to be able t
         <a href="/posts/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
       </li>
       <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
-      </li>
-      <li class="page-item">
         <a href="/posts/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
       </li>
       <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+        <a href="/posts/page/3/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
       </li>
     </ul></article>
 

@@ -94,184 +94,12 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
-      <a href="/posts/2018-06-20-13usingazuretexttranslationservices/" class="link black dim">
-        Using Azure text translation services
+      <a href="/posts/2018-04-09-1firstpost/" class="link black dim">
+        First post
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
-      As part of a discovery task at work, I was asked to take a look at some translation services available. First one I tried was Azure, and I have to say I&rsquo;m really impressed. There is also a free tier to use so there&rsquo;s no need to pay to try it out!
-First you need to get yourself set up with an Azure account and then create a cognitive service for translations.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-06-19-12secretmanager/" class="link black dim">
-        Using the Secret Manager in a Net Core ASP project
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      We&rsquo;ve all done it. We have an API key that we accidentally check into our source control, panic and then have to try and remove all traces of it. So I discovered a secret manager that&rsquo;s really simple to use.
-Thankfully it is not included as part of the latest .Net Core SDK (2.1 at this time).
-So to use, open up the .csproj file of your .Net Core ASP web application and add in the following to the existing section (There should be the target framework already in there:
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-05-22-10pushingdockerimagetoazurerepo/" class="link black dim">
-        Pushing a local Docker image to an Azure container registry
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Push and image from local to Azure Let&rsquo;s say you&rsquo;ve built a web app on your dev machine, created an Image for it, run it locally in a container and you&rsquo;re happy with how it&rsquo;s running. Now you need to deploy that to your container registry which happens to be on Azure. Not a problem.
-First things first, you need to create a Docker image to use. To do that, use a &lsquo;Dockerfile&rsquo; to build an image from your solution.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-05-17-9gettingdockercontainerfromazure/" class="link black dim">
-        Get Docker container from Azure and run locally
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      So I had a Docker image on an Azure container registry, and I wanted to pull it and run it locally on my machine.
-So with command line I did the following:
-Start Docker on my machine. (I always forget this&hellip;.)
-Login to the Azure registry.
-sudo docker login &lt;servername&gt; -u &lt;username&gt; -p &lt;password&gt; Pull the image that I want. (Tag is optional to get a specific version).
-docker pull &lt;servername&gt;/&lt;registry&gt;/&lt;image&gt;:&lt;tag&gt; Take a look at the images locally so that I can get the image id to start a container.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-05-23-11servingangularlocallywithhttps/" class="link black dim">
-        Serving an Angular app locally over https
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Had a bit of an issue trying to use
-navigator.geolocation.getCurrentPosition with Safari as it wouldn&rsquo;t allow it over http So to use this, I need to serve my Angular app over https.
-So first things first, I installed a package that contains a dev certificate.
-npm install browser-sync --save-dev Then in the package.json file, I replaced the start script to contain the following (or if you want to be able to use either http or https, then create a new start command such as &lsquo;start-https&rsquo; and put the command in there.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-05-11-8vscodedebuggingangular/" class="link black dim">
-        Debugging and Angular App in Visual Studio Code
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Not being able to debug Angular code in Visual Studio Code always bugged me (pun intended) and then I stumbled across an extension that allows just this!
-It&rsquo;s called &lsquo;Debugger for Chrome&rsquo; and once installed, is very easy to configure.
-First thing to do is press F5 to start debugging and it will ask you for an environment to use. Select &lsquo;Chrome&rsquo;.
-Then it will launch a launch.json file that will have a default configuration populated.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-05-02-7netcoresqldocker/" class="link black dim">
-        .Net Core &#43; Local SQl &#43; Docker &#43; Mac
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Started working through a PluralSight course on building .NET core API. Really good course and very thorough.
-It got to the stage where using a database was required, and the course used a local SQL database, something that isn&rsquo;t readily available on Visual Studio for Mac. So the work around that I found, which is great because I&rsquo;ve been looking for a use for it, is to use Docker. FINALLY!! A use I&rsquo;ve found for Docker!
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-04-26-6angularandhttpjson/" class="link black dim">
-        Angular - Http JSON responses
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Interesting morning. I was retrieving some data from an api in Angular and then trying to use .Filter to filter an array of returned objects. My class that I had mapped the JSON response to had property names using Pascal case, my API objects in the .Net Core project also had the property names using Pascal case. So when I was trying to do
-.filter(a =&gt; a.Week == weekNumber &amp;&amp; a.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-04-17-4angularinterceptors-with-refresh-tokens/" class="link black dim">
-        Angular Interceptors with some refresh token usage
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Following on from the Refresh Token post, I thought I would do a quick how to on using this in an Angular app. I heard someone talking about interceptors in Angular and thought I would investigate as they sounded useful. Once I had figured out what they did and how simple they are, it made sense to use them to implement the refresh tokens.
-Interceptors are a piece of code that get run on every http request that the app makes.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2018-04-17-5cors/" class="link black dim">
-        CORS - What a pain this has been
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      So, I spent 4 or 5 hours banging my head against my desk and battling with code because of a CORS issue.
-I published my new API changes to my Azure app and did the same for my Angular Web App, only to find that now I received a cross origin header error, because he web app and api were on different domains. However, I fixed this issue months ago when I first published them.
+      Welcome to my blog. My goal for this blog is to put up things that I&rsquo;m currently working on such as personal project, but more importantly, code examples on how to do things. I currently have how to guides and short scripts all over the place, so this will be my main go to site for these things.
     </div>
   </div>
 </div>
@@ -295,14 +123,11 @@ I published my new API changes to my Azure app and did the same for my Angular W
       <li class="page-item active">
         <a aria-current="page" aria-label="Page 3" class="page-link" role="button">3</a>
       </li>
-      <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Next" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;</span></a>
       </li>
-      <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
-      </li>
-      <li class="page-item">
-        <a href="/posts/page/4/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Last" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;&raquo;</span></a>
       </li>
     </ul></article>
 
