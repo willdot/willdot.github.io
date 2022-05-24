@@ -1,0 +1,4 @@
+baseURL = 'https://willdot.github.io'
+languageCode = 'en-gb'
+title = 'Willdot'
+theme = "ananke"

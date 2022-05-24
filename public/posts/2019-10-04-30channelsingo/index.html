@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Channels and Go routines | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.
+How I used channels The first thing to create would be the function that sleeps and then writes to the channel when done.
+I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Channels and Go routines" />
+<meta property="og:description" content="I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.
+How I used channels The first thing to create would be the function that sleeps and then writes to the channel when done.
+I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.net/posts/2019-10-04-30channelsingo/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-10-04T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-10-04T00:00:00+00:00" />
+
+<meta itemprop="name" content="Channels and Go routines">
+<meta itemprop="description" content="I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.
+How I used channels The first thing to create would be the function that sleeps and then writes to the channel when done.
+I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue."><meta itemprop="datePublished" content="2019-10-04T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-10-04T00:00:00+00:00" />
+<meta itemprop="wordCount" content="686">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Channels and Go routines"/>
+<meta name="twitter:description" content="I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.
+How I used channels The first thing to create would be the function that sleeps and then writes to the channel when done.
+I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Channels and Go routines</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-10-04T00:00:00Z">October 4, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>I started investigating how to use channels to run concurrent things and then finish tasks in a go routine depending on the outcome of another routine.</p>
+<h3 id="how-i-used-channels">How I used channels</h3>
+<p>The first thing to create would be the function that sleeps and then writes to the channel when done.</p>
+<p>I create a channel variable of type bool. Call my startSession function and pass in the channel and then wait for that channel to have some data that I can receive to continue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sessionFinished</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">sessionFinished</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">sessionFinished</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;GO GO GO&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#ae81ff">10</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;FINISHED&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The line &lt;-sessionFinished is blocking, meaning that nothing else will happen until the sessionFinished channel receives some data.</p>
+<p>The startSession function sleeps for 10 seconds, and then writes a bool value to the channel. The blocking line in the main func will then receive the data and the function will exit.</p>
+<p>This will output:</p>
+<pre tabindex="0"><code>GO GO GO
+
+// there will be a 10 second gap here
+
+FINISHED
+</code></pre><h3 id="doing-other-things-while-waiting-for-that-channel">Doing other things while waiting for that channel</h3>
+<p>Now that I have something that will pass data to a channel to signal that the session has finished, I need to create another go routine to do something until it gets the sessionFinished channel data.</p>
+<p>I&rsquo;ve created a function that takes a channel as an input and then starts an infinite loop. Inside this loop, is a select command. A select command takes data from channels and depending on which case returns first, it will carry out that code. So in our example, if the channel outputs data, it will exit the function, otherwise it will do our sleep and then printing the value of i to the console.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sessionFinished</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">sessionFinished</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">sessionFinished</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will output the following:</p>
+<pre tabindex="0"><code>GO GO GO
+1
+2
+3
+4
+FINISHED
+</code></pre><h3 id="multiple-channels">Multiple channels</h3>
+<p>What if I wanted the select command to do something else based on a different channel? That&rsquo;s as simple as creating another channel, passing it into the function and then adding it to the case of the select. Then which ever channel outputs first, will have it&rsquo;s code run.</p>
+<p>I&rsquo;ve modified the start session to sleep a random time between 5 and 10, and then created another channel that does the same thing as the first channel I created. I pass this into my function and then which ever finishes first will print that it won to the console and then exit.</p>
+<p>I&rsquo;ve also modified the startSession function to print the channel&rsquo;s name and the amount of time it will sleep for.</p>
+<p>Complete code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>((<span style="color:#e6db74">&#34;GO GO GO&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sessionOne</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sessionTwo</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">sessionOne</span>, <span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">sessionTwo</span>, <span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">sessionOne</span>, <span style="color:#a6e22e">sessionTwo</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">ch1</span>, <span style="color:#a6e22e">ch2</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;channel 1 won&#34;</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;channel 2 won&#34;</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startSession</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">channelName</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float64</span>()<span style="color:#f92672">*</span>(<span style="color:#ae81ff">10</span><span style="color:#f92672">-</span><span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Channel %v will run for %v seconds\n&#34;</span>, <span style="color:#a6e22e">channelName</span>, <span style="color:#a6e22e">t</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">t</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will output something like this, and each time you run it, it will be different:</p>
+<pre tabindex="0"><code>GO GO GO
+Channel 1 will run for 5.490952514229586 seconds
+Channel 2 will run for 6.912125321340266 seconds
+1
+2
+3
+4
+5
+channel 1 won
+</code></pre><p>This what a short intro into channels. I used what learnt to create a kart timing service, which can be found in the timingService <a href="https://github.com/willdot/KartTiming">here</a>  on github. It will start a race session that sleeps for a set time, and then each of the racers will lap a time and then finally the amount of laps each racer has done is printed. It uses the same principal I&rsquo;ve spoken about, with the addition of another data channel to allow the racers lap times to be logged after the session has finished.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.net" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
