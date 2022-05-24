@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://willdot.github.io/posts/2021-02-18-34race/</loc>
+    <loc>https://willdot.github.io/posts/21-race/</loc>
     <lastmod>2021-02-18T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://willdot.github.io/posts/</loc>
@@ -11,64 +11,64 @@
     <loc>https://willdot.github.io/</loc>
     <lastmod>2021-02-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2021-01-23-33grpcstreamin/</loc>
+    <loc>https://willdot.github.io/posts/20-grpcstreaming/</loc>
     <lastmod>2021-01-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2020-09-20-32grpc/</loc>
+    <loc>https://willdot.github.io/posts/19-grpc/</loc>
     <lastmod>2020-09-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2020-05-03-31maintainingorderfrommongo/</loc>
+    <loc>https://willdot.github.io/posts/18-maintainingorderfrommongo/</loc>
     <lastmod>2020-05-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-10-04-30channelsingo/</loc>
+    <loc>https://willdot.github.io/posts/17-channelsingo/</loc>
     <lastmod>2019-10-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-08-03-29mockingawriteringo/</loc>
+    <loc>https://willdot.github.io/posts/16-mockingawriteringo/</loc>
     <lastmod>2019-08-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-07-31-28pennysavingsapppt1/</loc>
+    <loc>https://willdot.github.io/posts/15-pennysavingsapppt1/</loc>
     <lastmod>2019-07-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-06-13-26introtogrpc/</loc>
+    <loc>https://willdot.github.io/posts/14-introtogrpc/</loc>
     <lastmod>2019-06-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-06-11-25myfirstgoapp/</loc>
+    <loc>https://willdot.github.io/posts/13-myfirstgoapp/</loc>
     <lastmod>2019-06-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2019-03-30-24godockercompose/</loc>
+    <loc>https://willdot.github.io/posts/12-godockercompose/</loc>
     <lastmod>2019-03-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-11-09-23dockermysql/</loc>
+    <loc>https://willdot.github.io/posts/11-dockermysql/</loc>
     <lastmod>2018-10-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-08-12-22gointerfaces/</loc>
+    <loc>https://willdot.github.io/posts/10-gointerfaces/</loc>
     <lastmod>2018-08-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-08-04-21gohttprequests/</loc>
+    <loc>https://willdot.github.io/posts/9-gohttprequests/</loc>
     <lastmod>2018-08-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-05-20goconcurrency/</loc>
+    <loc>https://willdot.github.io/posts/8-goconcurrency/</loc>
     <lastmod>2018-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-04-18gostructs/</loc>
+    <loc>https://willdot.github.io/posts/6-gostructs/</loc>
     <lastmod>2018-07-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-04-17govariables/</loc>
+    <loc>https://willdot.github.io/posts/5-govariables/</loc>
     <lastmod>2018-07-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-04-16introtogo/</loc>
+    <loc>https://willdot.github.io/posts/4-introtogo/</loc>
     <lastmod>2018-07-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-04-19slicesandmaps/</loc>
+    <loc>https://willdot.github.io/posts/7-slicesandmaps/</loc>
     <lastmod>2018-07-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-07-02-15settingupgo/</loc>
+    <loc>https://willdot.github.io/posts/3-settingupgo/</loc>
     <lastmod>2018-07-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-05-22-10pushingdockerimagetoazurerepo/</loc>
+    <loc>https://willdot.github.io/posts/2-pushingdockerimagetoazurerepo/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://willdot.github.io/posts/2018-04-09-1firstpost/</loc>
+    <loc>https://willdot.github.io/posts/1-firstpost/</loc>
     <lastmod>2018-04-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://willdot.github.io/categories/</loc>

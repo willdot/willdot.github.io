@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>How I was able to mock ioutil.WriteFile in go | Willdot</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="I&rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&rsquo;t want it to call the save function and actually save data to disk.">
+    <meta name="generator" content="Hugo 0.99.1" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="How I was able to mock ioutil.WriteFile in go" />
+<meta property="og:description" content="I&rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&rsquo;t want it to call the save function and actually save data to disk." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willdot.github.io/posts/16-mockingawriteringo/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-08-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-08-03T00:00:00+00:00" />
+
+<meta itemprop="name" content="How I was able to mock ioutil.WriteFile in go">
+<meta itemprop="description" content="I&rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&rsquo;t want it to call the save function and actually save data to disk."><meta itemprop="datePublished" content="2019-08-03T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-08-03T00:00:00+00:00" />
+<meta itemprop="wordCount" content="667">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How I was able to mock ioutil.WriteFile in go"/>
+<meta name="twitter:description" content="I&rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&rsquo;t want it to call the save function and actually save data to disk."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Willdot
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">How I was able to mock ioutil.WriteFile in go</h1>
+      
+      <p class="tracked">
+        By <strong>Will Andrews</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-08-03T00:00:00Z">August 3, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>I&rsquo;m currently writing an application that takes some data from the user and writes that data to a file for later use. The function that does the saving is very small and is called from within another function. My problem, is that I wanted to write a unit test to test that my parent function did everything it should in terms of preparing the data, but I don&rsquo;t want it to call the save function and actually save data to disk.</p>
+<p>I looked everywhere for a way around faking the package ioutil and it&rsquo;s WriteFile function, but found nothing. Then I remembered something that Mat Ryer had said in one of his conference talks. It was something like &ldquo;if they haven&rsquo;t provided an interface, then make one yourself&rdquo;. So that&rsquo;s what I did!</p>
+<h2 id="the-problem">The problem</h2>
+<p>Here is the code I had before that would use ioutil.WriteFile() to save my data to a json file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">requestData</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">MarshalIndent</span>(<span style="color:#a6e22e">requestData</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.json&#34;</span>, <span style="color:#a6e22e">file</span>, <span style="color:#ae81ff">0644</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>All it does is takes a filename, and some data and saves it as a .json file. But if I want to test the function that calls it, it will save data which I don&rsquo;t want.</p>
+<p>Unfortunately, ioutil.Writefile() doesn&rsquo;t implement an interface, so it can&rsquo;t be mocked. So instead I&rsquo;m going to create one.</p>
+<h2 id="the-solution">The solution</h2>
+<p>The signature for ioutil.WriteFile() is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">perm</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">FileMode</span>) <span style="color:#66d9ef">error</span>
+</span></span></code></pre></div><p>I create an interface that specifies that function with that signature:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Writer</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">perm</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">FileMode</span>) <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I can now create a struct and give it a method that implements that interface:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// FileWriter implements is an abstraction of ioutil.WriterFile
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">FileWriter</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// WriteFile implements the Writer interface that&#39;s been created so that ioutil.WriteFile can be mocked
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">FileWriter</span>) <span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">perm</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">FileMode</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span>, <span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">perm</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>What I&rsquo;ve done here is create a method on a struct that implements the interface, and returned the ioutil.WriteFile() function. So as soon as my method is called, it calls the ioutil function. They both have the same parameters and returns, so it&rsquo;s nice and simple.</p>
+<p>Now all I need to do is change my original save function to take the Writer interface as a parameter.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">requestData</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}, <span style="color:#a6e22e">w</span> <span style="color:#a6e22e">Writer</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">MarshalIndent</span>(<span style="color:#a6e22e">requestData</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.json&#34;</span>, <span style="color:#a6e22e">file</span>, <span style="color:#ae81ff">0644</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now when I call that function from my other code, I can pass in a FileWriter struct.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">filename</span>.(<span style="color:#66d9ef">string</span>), <span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">FileWriter</span>{})
+</span></span></code></pre></div><p>On the method I want to test, if I add a field to the struct for a the Writer interface and create a method that creates a new struct with a FileWriter, and it will all work. Then when I want to test my method, I can create a different struct that implements the Writer interface, writer my dummy code in there and pass it to the Struct I want to test, like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IWantToTestThis</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MyFileWriter</span> <span style="color:#a6e22e">Writer</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewIWantToTestThis</span>() <span style="color:#a6e22e">IWantToTestThis</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">IWantToTestThis</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MyFileWriter</span> : <span style="color:#a6e22e">FileWriter</span>{},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Then my test</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">FakeFileWriter</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">FakeFileWriter</span>) <span style="color:#a6e22e">WriteFile</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">perm</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">FileMode</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestThing</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">testThing</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">IWantToTestThis</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MyFileWriter</span>: <span style="color:#a6e22e">FakeFileWriter</span>{},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">something</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">got</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">testThing</span>.<span style="color:#a6e22e">Save</span>(<span style="color:#e6db74">&#34;test&#34;</span>, <span style="color:#a6e22e">something</span>, <span style="color:#a6e22e">testThing</span>.<span style="color:#a6e22e">MyFileWriter</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">got</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Failed&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This test creates a fake struct and implements the Writer interface by adding a method that implements the WriteFile function on the interface, but it does nothing.</p>
+<p>Then when I call the method I want to save, I&rsquo;m passing in my fake struct which means in the tested function, when it comes to calling the WriteFile function, it will call my fake method and return without saving a file. Problem solved!</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://willdot.github.io" >
+    &copy;  Willdot 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
