@@ -13,7 +13,7 @@
       <pubDate>Mon, 06 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>https://willdot.github.io/posts/22-ignorefiles/</guid>
-      <description>Ignore files are great. They allow you to ignore (of course) files/directories and so they aren&amp;rsquo;t used. For example a .gitignore file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a .dockerignore file can be used to only copy files into a Docker container that are actually needed for a build (there&amp;rsquo;s no point copying test code / resources if they aren&amp;rsquo;t needed).</description>
+      <description>Ignore files are great. They allow you to ignore (of course) files/directories in different scenarios. For example a .gitignore file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a .dockerignore file can be used to only copy files into a Docker container that are actually needed for a build (there&amp;rsquo;s no point copying test code / resources if they aren&amp;rsquo;t needed).</description>
     </item>
     
     <item>

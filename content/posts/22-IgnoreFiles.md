@@ -6,7 +6,7 @@ order: 22
 published: true
 ---
 
-Ignore files are great. They allow you to ignore (of course) files/directories and so they aren't used. For example a `.gitignore` file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a `.dockerignore` file can be used to only copy files into a Docker container that are actually needed for a build (there's no point copying test code / resources if they aren't needed).
+Ignore files are great. They allow you to ignore (of course) files/directories in different scenarios. For example a `.gitignore` file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a `.dockerignore` file can be used to only copy files into a Docker container that are actually needed for a build (there's no point copying test code / resources if they aren't needed).
 
 But what happens when you start ignoring files / directories that you didn't know you were ignoring?
 
@@ -17,7 +17,7 @@ About a year ago I was working on a Go service and updated the dependencies. (On
 
 Eventually while digging around in the file explorer with VS Code, I noticed that the directory that contained the "missing file" was shaded grey. I hadn't noticed that before on directories or files and so after a Google it turns out that it means a directory or file is being ignored because of an ignore file. So I opened up `.gitignore` for this project and there it was. We were ignoring a directory within our repository because we didn't want to commit the contents. Unfortunately the directory name also matched the directory for the dependency that got updated within the vendor directory. The fix was simple. Instead of having `folder-to-ignore` I put `\folder-to-ignore` indicating I only want the directory in the root of the project to be ignored. Once committed, all was right and CI passed.
 
-Fast forward a year and I'm in the third week of a new job and I'm on a Zoom call with my team listening to them trying to debug a build problem in CI and I think you can see where this is going. They had a similar issue that had me frustrated a year ago. They had updated dependencies and the path of an updated dependency on was inside a `.gitignore` file. I let them know what I think the issue was, and I saved them from any more frustrating time. Fast forward a couple of days and in another Zoom meeting with different members of the team and they had the exact same issue. What are the chances!!!!!
+Fast forward a year and I'm in the third week of a new job and I'm on a Zoom call with my team listening to them trying to debug a build problem in CI and I think you can see where this is going. They had a similar issue that had me frustrated a year ago. They had updated dependencies and the path of an updated dependency was also listed inside the `.gitignore` file. I let them know what I think the issue was, and I saved them from any more frustrating time. Fast forward a couple of days and in another Zoom meeting with different members of the team and they had the exact same issue. What are the chances?!?!?!
 
 ### Let's take a look with an example
 
