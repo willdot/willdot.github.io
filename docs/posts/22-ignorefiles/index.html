@@ -119,13 +119,17 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Ignore files are great. They allow you to ignore (of course) files/directories in different scenarios. For example a <code>.gitignore</code> file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a <code>.dockerignore</code> file can be used to only copy files into a Docker container that are actually needed for a build (there&rsquo;s no point copying test code / resources if they aren&rsquo;t needed).</p>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Ignore files are great. They allow you to ignore (of course) files/directories in different scenarios. For example a <em>.gitignore</em> file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a <em>.dockerignore</em> file can be used to only copy files into a Docker container that are actually needed for a build (there&rsquo;s no point copying test code / resources if they aren&rsquo;t needed).</p>
 <p>But what happens when you start ignoring files / directories that you didn&rsquo;t know you were ignoring?</p>
 <h3 id="story-time">Story time</h3>
 <p>Let me tell you a story about how I learned the hard way.</p>
 <p>About a year ago I was working on a Go service and updated the dependencies. (One thing to note is that we were vendoring). I ran local tests and linters and everything was good. However when I committed the changes, I was getting build errors in CI because of a missing file. Interesting. So I ran CI locally in a Docker container and it worked fine. Very interesting. What happened next was a morning of banging my head against my desk trying to work out why a file was &ldquo;missing&rdquo; in CI.</p>
-<p>Eventually while digging around in the file explorer with VS Code, I noticed that the directory that contained the &ldquo;missing file&rdquo; was shaded grey. I hadn&rsquo;t noticed that before on directories or files and so after a Google it turns out that it means a directory or file is being ignored because of an ignore file. So I opened up <code>.gitignore</code> for this project and there it was. We were ignoring a directory within our repository because we didn&rsquo;t want to commit the contents. Unfortunately the directory name also matched the directory for the dependency that got updated within the vendor directory. The fix was simple. Instead of having <code>folder-to-ignore</code> I put <code>\folder-to-ignore</code> indicating I only want the directory in the root of the project to be ignored. Once committed, all was right and CI passed.</p>
-<p>Fast forward a year and I&rsquo;m in the third week of a new job and I&rsquo;m on a Zoom call with my team listening to them trying to debug a build problem in CI and I think you can see where this is going. They had a similar issue that had me frustrated a year ago. They had updated dependencies and the path of an updated dependency was also listed inside the <code>.gitignore</code> file. I let them know what I think the issue was, and I saved them from any more frustrating time. Fast forward a couple of days and in another Zoom meeting with different members of the team and they had the exact same issue. What are the chances?!?!?!</p>
+<p>Eventually while digging around in the file explorer with VS Code, I noticed that the directory that contained the &ldquo;missing file&rdquo; was shaded grey. I hadn&rsquo;t noticed that before on directories or files and so after a Google it turns out that it means a directory or file is being ignored because of an ignore file. So I opened up <em>.gitignore</em> for this project and there it was. We were ignoring a directory within our repository because we didn&rsquo;t want to commit the contents. Unfortunately the directory name also matched the directory for the dependency that got updated within the vendor directory. The fix was simple. Instead of having</p>
+<pre tabindex="0"><code>folder-to-ignore
+</code></pre><p>I put</p>
+<pre tabindex="0"><code>\folder-to-ignore
+</code></pre><p>indicating I only want the directory in the root of the project to be ignored. Once committed, all was right and CI passed.</p>
+<p>Fast forward a year and I&rsquo;m in the third week of a new job and I&rsquo;m on a Zoom call with my team listening to them trying to debug a build problem in CI and I think you can see where this is going. They had a similar issue that had me frustrated a year ago. They had updated dependencies and the path of an updated dependency was also listed inside the <em>.gitignore</em> file. I let them know what I think the issue was, and I saved them from any more frustrating time. Fast forward a couple of days and in another Zoom meeting with different members of the team and they had the exact same issue. What are the chances?!?!?!</p>
 <h3 id="lets-take-a-look-with-an-example">Let&rsquo;s take a look with an example</h3>
 <p>Lets say we have a project structure like this:</p>
 <pre tabindex="0"><code>main.go
@@ -138,19 +142,19 @@ vendor/
                 client.go
             server/
                 server.go
-</code></pre><p>Ideally we don&rsquo;t want to commit the built binaries and so we have a <code>.gitignore</code> file like so.</p>
+</code></pre><p>Ideally we don&rsquo;t want to commit the built binaries and so we have a <em>.gitignore</em> file like so.</p>
 <pre tabindex="0"><code># ignore the built binary
 client
-</code></pre><p>If we commit this, the vendor directory <code>/vendor/github.com/somelibrary/client</code> and it&rsquo;s contents will be ignored.</p>
-<p>However updating the <code>.gitignore</code> file to be</p>
+</code></pre><p>If we commit this, the vendor directory <strong>/vendor/github.com/somelibrary/client</strong> and it&rsquo;s contents will be ignored.</p>
+<p>However updating the <em>.gitignore</em> file to be</p>
 <pre tabindex="0"><code>/client
 </code></pre><p>we will only ignore the binary at the root directory and not the directory nested inside the vendors directory.</p>
-<p>We could improve this a bit more by ensuring we never accidentally come across this again by explicitly making sure we always commit the <code>/vendor</code> directory and all it&rsquo;s contents by doing this:</p>
+<p>We could improve this a bit more by ensuring we never accidentally come across this again by explicitly making sure we always commit the <strong>/vendor</strong> directory and all it&rsquo;s contents by doing this:</p>
 <pre tabindex="0"><code>!/vendor/**
 client
-</code></pre><p>Note: A gotcha is that if you put <code>client</code> first it will still ignore it inside the <code>vendor</code> directory. So always put your &ldquo;nots&rdquo; at the top.</p>
-<p>This doesn&rsquo;t just apply for vendoring. Using the example above where we were ignoring <code>client</code> but you had something like <code>pkg/database/client</code>, that too would be ignored.</p>
-<p>The same thing is true for <code>.dockerignore</code> files, so always check your ignore files and be as explicit as you can about files and directories you wish to ignore. Otherwise you&rsquo;ll spend hours banging your head against your desk working out why things aren&rsquo;t working.</p>
+</code></pre><p>Note: A gotcha is that if you put <strong>client</strong> first it will still ignore it inside the <strong>vendor</strong> directory. So always put your &ldquo;nots&rdquo; at the top.</p>
+<p>This doesn&rsquo;t just apply for vendoring. Using the example above where we were ignoring &ldquo;client&rdquo; but you had something like <strong>pkg/database/client</strong>, that too would be ignored.</p>
+<p>The same thing is true for <em>.dockerignore</em> files, so always check your ignore files and be as explicit as you can about files and directories you wish to ignore. Otherwise you&rsquo;ll spend hours banging your head against your desk working out why things aren&rsquo;t working.</p>
 <h3 id="takeaways">Takeaways</h3>
 <ul>
 <li>Be as explicit as you can when using ignore files.</li>
