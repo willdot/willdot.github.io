@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Willdot</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Thu, 18 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://willdot.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://willdot.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Don&#39;t let ignore files get the better of you</title>
+      <link>https://willdot.github.io/posts/22-ignorefiles/</link>
+      <pubDate>Mon, 06 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://willdot.github.io/posts/22-ignorefiles/</guid>
+      <description>Ignore files are great. They allow you to ignore (of course) files/directories and so they aren&amp;rsquo;t used. For example a .gitignore file can be used to prevent files from being committed to Git such as local secrets, built binaries or any temp files. Or a .dockerignore file can be used to only copy files into a Docker container that are actually needed for a build (there&amp;rsquo;s no point copying test code / resources if they aren&amp;rsquo;t needed).</description>
+    </item>
+    
     <item>
       <title>How the race flag caught me out</title>
       <link>https://willdot.github.io/posts/21-race/</link>
@@ -77,16 +86,6 @@ I create a channel variable of type bool. Call my startSession function and pass
       <description>I bank with Monzo (for so many reasons that I won&amp;rsquo;t post here). One of the cool things they offer is IFTTT integration, and one of their applets is the 1p Savings Challenge. It goes like this:
 1st January it puts 1p into a savings pot. 2nd January it puts 2p into a savings pot. 3rd January it puts 3p into a savings pot.
 It keeps going until the 31st of December where it&amp;rsquo;ll put £3.</description>
-    </item>
-    
-    <item>
-      <title>Intro to Microservices and gRPC - part 1</title>
-      <link>https://willdot.github.io/posts/14-introtogrpc/</link>
-      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://willdot.github.io/posts/14-introtogrpc/</guid>
-      <description>After I made my first CLI Go application, I fancied having a go at microservices, as I had read that Go was perfect for it. I found a really good guide online, walking me through the creation of a couple of Microservices, and once I had finished that I worked on moving my Daily Do project into a Microservice structure. I also found another user for Docker containers&amp;hellip;.whoop whoop!
-gRPC I had seen this before on some sites when reading about Go, and assumed the &amp;lsquo;g&amp;rsquo; stood for Go.</description>
     </item>
     
     <item>
