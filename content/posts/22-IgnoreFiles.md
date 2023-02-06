@@ -69,7 +69,7 @@ client
 ```
 Note: A gotcha is that if you put **client** first it will still ignore it inside the **vendor** directory. So always put your "nots" at the top.
 
-This doesn't just apply for vendoring. Using the example above where we were ignoring "client" but you had something like **pkg/database/client**, that too would be ignored. 
+This doesn't just apply for vendoring. Using the example above where we were ignoring **client** but you had something like **pkg/database/client**, that too would be ignored. 
 
 The same thing is true for *.dockerignore* files, so always check your ignore files and be as explicit as you can about files and directories you wish to ignore. Otherwise you'll spend hours banging your head against your desk working out why things aren't working.
 
