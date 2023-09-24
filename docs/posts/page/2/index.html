@@ -7,7 +7,7 @@
     <title>Willdot</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1">
     <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.99.1" />
+    <meta name="generator" content="Hugo 0.119.0">
     
     
     
@@ -38,7 +38,6 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://willdot.github.io/posts/" />
-
 <meta itemprop="name" content="Posts">
 <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Posts"/>
@@ -94,15 +93,32 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
+      <a href="/posts/12-godockercompose/" class="link black dim">
+        Hosting a web application and MySql database in a Docker container with Docker Compose
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose.
+    </div>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="relative w-100 w-30-l mb4 bg-white">
+          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
+  <div class="bg-white mb3 pa4 gray overflow-hidden">
+    <span class="f6 db">Posts</span>
+    <h1 class="f3 near-black">
       <a href="/posts/11-dockermysql/" class="link black dim">
         Creating Mysql databases in Docker
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       Recently I&rsquo;ve been playing around with other databases other than Microsoft Sql Server. I&rsquo;ve also been trying to use docker more, so to achieve both of these, I&rsquo;ve been using new database images in Docker.
-Prerequisites   Docker using Linux containers
-  Mysql workbench
-  Create docker container with Mysql image docker run -p 3306:3306 -d --name {container name} -e MYSQL_ROOT_PASSWORD={password} mysql/mysql-server Check container is running docker ps Connect to the Mysql server inside container and create a new user docker exec -it {container name} bash mysql -uroot -p{password} (You&rsquo;ll now be running the Mysql cli)
+Prerequisites Docker using Linux containers
+Mysql workbench
+Create docker container with Mysql image docker run -p 3306:3306 -d --name {container name} -e MYSQL_ROOT_PASSWORD={password} mysql/mysql-server Check container is running docker ps Connect to the Mysql server inside container and create a new user docker exec -it {container name} bash mysql -uroot -p{password} (You&rsquo;ll now be running the Mysql cli)
     </div>
   </div>
 </div>
@@ -121,7 +137,7 @@ Prerequisites   Docker using Linux containers
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       Interfaces are a very useful part of software development as they allow the code to be decoupled. In Go, a language where there aren&rsquo;t classes, we can use the structs and kind of use them as a class. That way we can create interfaces and then create structs that implement these interfaces.
 Creating an interface in Go Creating an interface is quite easy.
-type SomeService interface {  DoSomething(string) string  DoSomethingElse(int, string) string } Creating a struct and then making it implement the interface Next we create a struct, but instead of putting the functions from the interface inside the struct (because structs can only contain fields), we create the functions and then tell the functions what the receiver is.
+type SomeService interface { DoSomething(string) string DoSomethingElse(int, string) string } Creating a struct and then making it implement the interface Next we create a struct, but instead of putting the functions from the interface inside the struct (because structs can only contain fields), we create the functions and then tell the functions what the receiver is.
     </div>
   </div>
 </div>
@@ -141,7 +157,7 @@ type SomeService interface {  DoSomething(string) string  DoSomethingElse(int, s
       While creating a small command line app to make use of Azure&rsquo;s translation services, I used the built in HTTP request package and the JSON decoding.
 Making HTTP requests There are a few things required to make an HTTP call in Go. First, you need a client.
 client := &amp;http.Client{} You also need a url and if making a post request, a body in the form of JSON.
-url := &#34;http://localhost:80/something&#34;  body := strings.
+url := &#34;http://localhost:80/something&#34; body := strings.
     </div>
   </div>
 </div>
@@ -252,24 +268,6 @@ An array has a fixed length, where as a slice can be increased and decreased in 
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       Today I decided to take a step away from the usual stuff I work with (.net, Angular) and learn something new. I have heard a few people tell me that Go is a fun and easy to pick up language and after a bit of Googling, I soon discovered how popular it was. So the next few blog posts will be Go related, starting with this post on setting up a dev environment.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/2-pushingdockerimagetoazurerepo/" class="link black dim">
-        Pushing a local Docker image to an Azure container registry
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      Push and image from local to Azure Let&rsquo;s say you&rsquo;ve built a web app on your dev machine, created an Image for it, run it locally in a container and you&rsquo;re happy with how it&rsquo;s running. Now you need to deploy that to your container registry which happens to be on Azure. Not a problem.
-First things first, you need to create a Docker image to use. To do that, use a &lsquo;Dockerfile&rsquo; to build an image from your solution.
     </div>
   </div>
 </div>

@@ -7,7 +7,7 @@
     <title>Willdot</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1">
     <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.99.1" />
+    <meta name="generator" content="Hugo 0.119.0">
     
     
     
@@ -38,7 +38,6 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://willdot.github.io/posts/" />
-
 <meta itemprop="name" content="Posts">
 <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Posts"/>
@@ -94,6 +93,23 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
+      <a href="/posts/23-structembeding/" class="link black dim">
+        The dangers of struct embeding
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      Go comes with the ability to embed structs into other structs. It allows you to &ldquo;reuse&rdquo; fields and functions from one struct (the base) with another struct that embeds it. This can often be misunderstood as inheritance that you get from object orientated programming languages. While it can be useful and prevents having to duplicate code, it can also cause bugs that can be hidden in plain sight, which is what I encountered recently.
+    </div>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="relative w-100 w-30-l mb4 bg-white">
+          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
+  <div class="bg-white mb3 pa4 gray overflow-hidden">
+    <span class="f6 db">Posts</span>
+    <h1 class="f3 near-black">
       <a href="/posts/22-ignorefiles/" class="link black dim">
         Don&#39;t let ignore files get the better of you
       </a>
@@ -136,7 +152,7 @@ Let me explain that a little better. When you create an http server and run it, 
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       In the world of gRPC most cases will be a request response type of communication. The client sends the request to the server. The server does something, perhaps get some data from a database, and then returns it in a response to the client. This is known as a Unary RPC.
 However there are 3 other types that can be used which involve streaming.
- Server side - The server sends multiple messages back to the client, who waits for each response Client side - The client sends multiple messages to the server, which waits for each request before sending the response Bidirectional - Both server and client send messages to each other at the same time.
+Server side - The server sends multiple messages back to the client, who waits for each response Client side - The client sends multiple messages to the server, which waits for each request before sending the response Bidirectional - Both server and client send messages to each other at the same time.
     </div>
   </div>
 </div>
@@ -172,7 +188,7 @@ For example, when a gRPC request is being handled by a server, the client may ha
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       Recently I&rsquo;ve been extracting data from a MongoDB collection, but I&rsquo;ve had a requirement to keep the ordering of some of the data. For example, some of the data I&rsquo;ve pulled out is stored as a primitive.Binary, and in this binary data is stack trace information. Part of the stack trace is a segment of code, which contains elements line number and code value. So something like this:
-{  &#34;code&#34;: {  &#34;27&#34;: &#34;func main() {&#34;,  &#34;28&#34;: &#34; err := someBadFunc()&#34;,  &#34;29&#34;: &#34; if err !
+{ &#34;code&#34;: { &#34;27&#34;: &#34;func main() {&#34;, &#34;28&#34;: &#34; err := someBadFunc()&#34;, &#34;29&#34;: &#34; if err !
     </div>
   </div>
 </div>
@@ -245,23 +261,6 @@ It keeps going until the 31st of December where it&rsquo;ll put £3.
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
       When I&rsquo;m working with multiple branches in Agile projects, I found I was typing git checkout, git commit, git push far too much. And then there the remembering the branch name that I was wanting to checkout (some of them were so long as well&hellip;&hellip;). I decided that I didn&rsquo;t want to use alias, but instead put my knowledge of Go that I had learnt and put it to use. So I wrote a command line app that allows quick shortcuts to be used to do the commands I did the most.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100 w-30-l mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/12-godockercompose/" class="link black dim">
-        Hosting a web application and MySql database in a Docker container with Docker Compose
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      So far when ever I create an application and then use Docker, I run a Docker command that uses a DockerFile to create and image and then I have to spin up a new container for that image. But what I wanted was to be able to run a command and for my existing container to get the latest version of the code I was developing. That&rsquo;s where I read about Docker Compose.
     </div>
   </div>
 </div>
