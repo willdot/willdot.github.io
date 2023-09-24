@@ -7,7 +7,7 @@
     <title>Willdot</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1">
     <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.99.1" />
+    <meta name="generator" content="Hugo 0.119.0">
     
     
     
@@ -38,7 +38,6 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://willdot.github.io/" />
-
 <meta itemprop="name" content="Willdot">
 <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Willdot"/>
@@ -119,6 +118,30 @@
       
       <div class="blah w-100">
         <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/23-structembeding/" class="color-inherit dim link">
+            The dangers of struct embeding
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          Go comes with the ability to embed structs into other structs. It allows you to &ldquo;reuse&rdquo; fields and functions from one struct (the base) with another struct that embeds it. This can often be misunderstood as inheritance that you get from object orientated programming languages. While it can be useful and prevents having to duplicate code, it can also cause bugs that can be hidden in plain sight, which is what I encountered recently.
+        </div>
+          <a href="/posts/23-structembeding/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+        
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="relative w-100 mb4">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
+    <div class="flex flex-column flex-row-ns">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
           <a href="/posts/22-ignorefiles/" class="color-inherit dim link">
             Don&#39;t let ignore files get the better of you
             </a>
@@ -160,38 +183,18 @@ Let me explain that a little better. When you create an http server and run it, 
 
           </div>
         
-          <div class="relative w-100 mb4">
-            
-<article class="bb b--black-10">
-  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
-    <div class="flex flex-column flex-row-ns">
-      
-      <div class="blah w-100">
-        <h1 class="f3 fw1 athelas mt0 lh-title">
-          <a href="/posts/20-grpcstreaming/" class="color-inherit dim link">
-            Server side streaming gRPC in Go
-            </a>
-        </h1>
-        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
-          In the world of gRPC most cases will be a request response type of communication. The client sends the request to the server. The server does something, perhaps get some data from a database, and then returns it in a response to the client. This is known as a Unary RPC.
-However there are 3 other types that can be used which involve streaming.
- Server side - The server sends multiple messages back to the client, who waits for each response Client side - The client sends multiple messages to the server, which waits for each request before sending the response Bidirectional - Both server and client send messages to each other at the same time.
-        </div>
-          <a href="/posts/20-grpcstreaming/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
-        
-      </div>
-    </div>
-  </div>
-</article>
-
-          </div>
-        
       </section>
 
       
       <section class="w-100">
         <h1 class="f3">More</h1>
         
+        
+          <h2 class="f5 fw4 mb4 dib mr3">
+            <a href="/posts/20-grpcstreaming/" class="link black dim">
+              Server side streaming gRPC in Go
+            </a>
+          </h2>
         
           <h2 class="f5 fw4 mb4 dib mr3">
             <a href="/posts/19-grpc/" class="link black dim">
@@ -208,12 +211,6 @@ However there are 3 other types that can be used which involve streaming.
           <h2 class="f5 fw4 mb4 dib mr3">
             <a href="/posts/17-channelsingo/" class="link black dim">
               Channels and Go routines
-            </a>
-          </h2>
-        
-          <h2 class="f5 fw4 mb4 dib mr3">
-            <a href="/posts/16-mockingawriteringo/" class="link black dim">
-              How I was able to mock ioutil.WriteFile in go
             </a>
           </h2>
         
